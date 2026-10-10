@@ -1,4 +1,4 @@
-#include "../dmcu.h"
+#include "reference/dmcu/dmcu.h"
 #include <stdio.h>
 #include <stdlib.h>
 
