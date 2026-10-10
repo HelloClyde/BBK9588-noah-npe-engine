@@ -20,7 +20,7 @@ Windows 使用 MinGW 时可添加 `-G "MinGW Makefiles"`，必要时用 `-DSDL2_
 ./dist/npe-sdl path/to/game.npe
 ```
 
-Windows 将 NPE 文件拖到 `npe-sdl.exe` 上即可启动。安装目录需保留 `assets` 和 SDL2 运行库。完整键盘、手柄与存档说明见 [操作说明](npe-sdl/PORTABLE.md)。
+Windows 双击 `npe-sdl.exe` 可通过文件选择框打开游戏，也可将 NPE 文件拖到 EXE 上启动。安装目录需保留 `assets` 和 SDL2 运行库。完整键盘、手柄与存档说明见 [操作说明](npe-sdl/PORTABLE.md)。
 
 ## 测试与参考
 

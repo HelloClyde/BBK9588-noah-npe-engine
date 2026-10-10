@@ -5,6 +5,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef _WIN32
+#include <windows.h>
+#include <commdlg.h>
+#endif
 #include "controller_input.inc"
 
 /* 47:536A..5494 routes I/J/K/L/M (both cases) to the same services as
@@ -4309,5 +4313,35 @@ done:
 }
 
 int main(int argc, char **argv) {
+#ifdef _WIN32
+    if(argc==1){
+        WCHAR path[32768]={0};
+        OPENFILENAMEW dialog;
+        memset(&dialog,0,sizeof(dialog));
+        dialog.lStructSize=sizeof(dialog);
+        dialog.lpstrFilter=L"NPE games (*.npe)\0*.npe\0All files (*.*)\0*.*\0\0";
+        dialog.lpstrFile=path;
+        dialog.nMaxFile=(DWORD)(sizeof(path)/sizeof(path[0]));
+        dialog.lpstrTitle=L"选择 NPE 游戏";
+        dialog.Flags=OFN_EXPLORER|OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST|
+            OFN_NOCHANGEDIR|OFN_HIDEREADONLY;
+        if(!GetOpenFileNameW(&dialog)){
+            DWORD error=CommDlgExtendedError();
+            if(error)MessageBoxW(NULL,L"无法打开文件选择窗口。",L"NPE SDL",MB_OK|MB_ICONERROR);
+            return error?1:0;
+        }
+        int length=WideCharToMultiByte(CP_UTF8,WC_ERR_INVALID_CHARS,path,-1,NULL,0,NULL,NULL);
+        char *selected=length>0?malloc((size_t)length):NULL;
+        if(!selected || !WideCharToMultiByte(CP_UTF8,WC_ERR_INVALID_CHARS,path,-1,
+                                            selected,length,NULL,NULL)){
+            free(selected);
+            MessageBoxW(NULL,L"无法读取所选文件路径。",L"NPE SDL",MB_OK|MB_ICONERROR);
+            return 1;
+        }
+        char *args[]={argv[0],selected,NULL};
+        int result=run(2,args);
+        free(selected);return result;
+    }
+#endif
     return run(argc, argv);
 }

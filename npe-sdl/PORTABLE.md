@@ -5,7 +5,8 @@
 ## 启动
 
 解压整个目录，保留 `assets` 和程序的相对位置。Windows 下可以把 `.npe`
-文件拖到 `npe-sdl.exe` 上，或在 PowerShell 中运行：
+文件拖到 `npe-sdl.exe` 上；也可以直接双击 EXE，在弹出的文件选择框中打开 NPE。
+取消选择会直接退出。也可以在 PowerShell 中运行：
 
 ```powershell
 & '.\npe-sdl.exe' 'D:\游戏\天降风云V1.3.npe'
