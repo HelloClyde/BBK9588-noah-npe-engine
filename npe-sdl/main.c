@@ -30,6 +30,7 @@ static NpeSoundPlayer *game_sound_player;
 static int game_audio_event(const SDL_Event *event){
     return npe_sound_handle_event(game_sound_player,event);
 }
+static void show_controller_help(void);
 static int game_PollEvent(SDL_Event *event){
     (void)npe_sound_pump(game_sound_player);
     while(SDL_PollEvent(event))if(!game_audio_event(event)&&game_pad_event(event))return 1;
@@ -1933,6 +1934,54 @@ static int play_scene_animation(SDL_Renderer *renderer, SDL_Texture *texture,
 }
 typedef struct {SDL_Renderer *renderer;SDL_Texture *texture;} NpcMoveDisplay;
 typedef NpcMoveDisplay WalkDisplay;
+
+static void show_controller_help(void){
+    SDL_Window *window=SDL_GetKeyboardFocus();
+    SDL_Renderer *renderer=window?SDL_GetRenderer(window):NULL;
+    if(!renderer || renderer!=last_pixel_renderer)return;
+    NpeFont font={0};
+    if(load_native_fonts(&font))return;
+    SDL_Texture *texture=SDL_CreateTexture(renderer,SDL_PIXELFORMAT_ARGB8888,
+        SDL_TEXTUREACCESS_STREAMING,NPE_WIDTH,NPE_HEIGHT);
+    if(!texture){npe_font_free(&font);return;}
+    uint8_t saved[NPE_WIDTH*NPE_HEIGHT],help[NPE_WIDTH*NPE_HEIGHT]={0};
+    memcpy(saved,last_pixel_frame,sizeof(saved));
+    static const uint8_t line0[]={0xca,0xd6,0xb1,0xfa,0xb0,0xb4,0xbc,0xfc,0xcb,0xb5,0xc3,0xf7};
+    static const uint8_t line1[]={0xb7,0xbd,0xcf,0xf2,0x2f,0xd7,0xf3,0xd2,0xa1,0xb8,0xcb,0x3a,0xd2,0xc6,0xb6,0xaf,0xd1,0xa1,0xd4,0xf1};
+    static const uint8_t line2[]={0x41,0x3a,0xc8,0xb7,0xc8,0xcf,0x2f,0xb7,0xad,0xd2,0xb3,0x20,0x20,0x58,0x3a,0xb6,0xd4,0xbb,0xb0};
+    static const uint8_t line3[]={0x42,0x3a,0xb7,0xb5,0xbb,0xd8,0x2f,0xb2,0xcb,0xb5,0xa5,0x20,0x20,0x59,0x3a,0xd0,0xb6,0xd7,0xb0};
+    static const uint8_t line4[]={0x4c,0x42,0x2f,0x52,0x42,0x3a,0xcb,0xb5,0xc3,0xf7,0xb7,0xad,0xd2,0xb3};
+    static const uint8_t line5[]={0xb4,0xf0,0xcc,0xe2,0x20,0x41,0x2f,0x42,0x2f,0x58,0x2f,0x59,0x20,0xb6,0xd4,0xd3,0xa6,0x20,0x41,0x2f,0x42,0x2f,0x43,0x2f,0x44};
+    static const uint8_t line6[]={0x53,0x74,0x61,0x72,0x74,0x20,0xbb,0xf2,0x20,0x42,0x3a,0xb9,0xd8,0xb1,0xd5,0xcb,0xb5,0xc3,0xf7};
+    (void)npe_draw_gbk_text(&font,line0,sizeof(line0),4,4,help);
+    (void)npe_draw_gbk_text(&font,line1,sizeof(line1),4,20,help);
+    (void)npe_draw_gbk_text(&font,line2,sizeof(line2),4,36,help);
+    (void)npe_draw_gbk_text(&font,line3,sizeof(line3),4,52,help);
+    (void)npe_draw_gbk_text(&font,line4,sizeof(line4),4,68,help);
+    (void)npe_draw_gbk_text(&font,line5,sizeof(line5),4,84,help);
+    (void)npe_draw_gbk_text(&font,line6,sizeof(line6),4,100,help);
+    draw_pixels(renderer,texture,help);
+    game_pad_reset();
+    for(;;){
+        SDL_Event event;
+        (void)npe_sound_pump(game_sound_player);
+        if(!SDL_WaitEventTimeout(&event,20))continue;
+        if(event.type==SDL_QUIT){SDL_PushEvent(&event);break;}
+        if(event.type==SDL_KEYDOWN && (event.key.keysym.sym==SDLK_ESCAPE ||
+           event.key.keysym.sym==SDLK_RETURN))break;
+        if(event.type==SDL_CONTROLLERBUTTONDOWN && event.cbutton.which==game_pad_id &&
+           (event.cbutton.button==SDL_CONTROLLER_BUTTON_START ||
+            event.cbutton.button==SDL_CONTROLLER_BUTTON_B))break;
+        if(game_audio_event(&event))continue;
+        if(event.type==SDL_CONTROLLERDEVICEADDED || event.type==SDL_CONTROLLERDEVICEREMOVED ||
+           event.type==SDL_WINDOWEVENT)(void)game_pad_event(&event);
+        if(event.type==SDL_WINDOWEVENT && event.window.event==SDL_WINDOWEVENT_EXPOSED)
+            draw_pixels(renderer,texture,help);
+    }
+    game_pad_reset();
+    draw_pixels(renderer,texture,saved);
+    SDL_DestroyTexture(texture);npe_font_free(&font);
+}
 static int commit_world_walk(void *,const uint8_t *,unsigned);
 static int commit_npc_script_move(void *opaque,const uint8_t *pixels,unsigned wait_parameter) {
     NpcMoveDisplay *display=opaque;
@@ -3188,6 +3237,7 @@ static int run(int argc, char **argv) {
     NpeMap map;
     NpeWorld world={0};
     game_pad_mode=&world.game_mode;
+    game_pad_show_help=show_controller_help;
     BattleAnimationDisplay battle_animation_display={0};
     unsigned system_menu_selection = 0;
     unsigned system_submenu_selection = 0;

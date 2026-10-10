@@ -7,11 +7,16 @@
 static SDL_Event button(Uint32 type,Uint8 b){
     SDL_Event e;SDL_zero(e);e.type=type;e.cbutton.which=game_pad_id;e.cbutton.button=b;return e;
 }
+static int help_calls;
+static void help(void){++help_calls;}
 int main(void){
     assert(!SDL_Init(SDL_INIT_GAMECONTROLLER|SDL_INIT_EVENTS));
     int device=SDL_JoystickAttachVirtual(SDL_JOYSTICK_TYPE_GAMECONTROLLER,6,21,0);
     assert(device>=0);game_pad=SDL_GameControllerOpen(device);assert(game_pad);
     game_pad_id=SDL_JoystickInstanceID(SDL_GameControllerGetJoystick(game_pad));
+    game_pad_show_help=help;
+    SDL_Event start=button(SDL_CONTROLLERBUTTONDOWN,SDL_CONTROLLER_BUTTON_START);
+    assert(!game_pad_event(&start)&&help_calls==1);
     uint16_t mode=7;game_pad_mode=&mode;
     SDL_Event e=button(SDL_CONTROLLERBUTTONDOWN,SDL_CONTROLLER_BUTTON_A);
     assert(game_pad_event(&e)&&e.key.keysym.sym==SDLK_RETURN);

@@ -1,5 +1,6 @@
 /* SDL GameController input translated into the existing keyboard actions. */
 static SDL_GameController *game_pad;
+static void (*game_pad_show_help)(void);
 static SDL_JoystickID game_pad_id=-1;
 static uint16_t *game_pad_mode;
 static int game_pad_focus=1,game_pad_x,game_pad_y;
@@ -62,6 +63,11 @@ static int game_pad_event(SDL_Event *event){
         case SDL_CONTROLLER_BUTTON_DPAD_RIGHT:bit=8;break;
         default:
             if(!down)return 0;
+            if(event->cbutton.button==SDL_CONTROLLER_BUTTON_START){
+                game_pad_reset();
+                if(game_pad_show_help)game_pad_show_help();
+                return 0;
+            }
             if(game_pad_mode && *game_pad_mode==8){
                 SDL_Keycode answer=event->cbutton.button==SDL_CONTROLLER_BUTTON_A?SDLK_a:
                     event->cbutton.button==SDL_CONTROLLER_BUTTON_B?SDLK_b:
@@ -72,7 +78,7 @@ static int game_pad_event(SDL_Event *event){
             switch(event->cbutton.button){
             case SDL_CONTROLLER_BUTTON_A:return game_pad_key(event,
                 game_pad_mode&&(*game_pad_mode==2||*game_pad_mode==5)?SDLK_SPACE:SDLK_RETURN,0);
-            case SDL_CONTROLLER_BUTTON_B:case SDL_CONTROLLER_BUTTON_START:return game_pad_key(event,SDLK_F4,0);
+            case SDL_CONTROLLER_BUTTON_B:return game_pad_key(event,SDLK_F4,0);
             case SDL_CONTROLLER_BUTTON_X:return game_pad_key(event,SDLK_SPACE,0);
             case SDL_CONTROLLER_BUTTON_Y:return game_pad_key(event,SDLK_u,0);
             case SDL_CONTROLLER_BUTTON_LEFTSHOULDER:return game_pad_key(event,SDLK_p,0);
