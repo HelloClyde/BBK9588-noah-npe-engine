@@ -1,0 +1,21 @@
+/* Original group/combine record preparation; auxiliary call excluded. */
+static const GroupPrepareCase group_prepare_cases[]={
+{"group-single-middle",1,3,1,{0},{129,166,255},{0,4,4}},
+{"group-two-first",2,3,1,{0},{129,166,255},{1,4,4}},
+{"group-three-last",3,3,1,{0},{129,166,255},{2,4,6}},
+{"group-negative-first",3,3,1,{0},{129,166,255},{2,4,4}},
+{"group-sign-bit-first",3,3,1,{0},{129,166,255},{2,4,4}},
+{"group-all-zero",3,3,1,{0},{129,166,255},{2,4,6}},
+{"group-zero-count",3,0,1,{0},{129,166,255},{2,4,4}},
+{"group-one-count-zero",3,1,1,{0},{129,166,255},{2,4,4}},
+{"group-two-count-zero",3,2,1,{0},{129,166,255},{2,4,5}},
+{"group-zero-party",0,3,1,{0},{129,166,255},{255,209,2}},
+{"combine-party-0",0,3,1,{1},{129,166,255},{129,220,183}},
+{"combine-party-1",1,3,1,{1},{129,166,255},{129,3,2}},
+{"combine-party-2",2,3,1,{1},{129,166,255},{129,3,3}},
+{"combine-party-3",3,3,1,{1},{129,166,255},{129,3,4}},
+{"group-then-combine",3,3,2,{0,1},{129,166,255},{2,3,4}},
+{"combine-then-group",3,3,2,{1,0},{129,166,255},{2,4,5}},
+{"group-twice",3,3,2,{0,0},{129,166,255},{2,4,5}},
+{"combine-twice",3,3,2,{1,1},{129,166,255},{129,3,4}},
+};

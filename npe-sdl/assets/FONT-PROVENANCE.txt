@@ -1,0 +1,23 @@
+Native NP560 bitmap font assets
+
+gbk12-native.bin (NPEFONT1, 579872 bytes)
+SHA-256: a7b1d94bfb8edc3f082c2a8dfba064c57d00fe2a98b2a9a996af5c521f931391
+gbk16-native.bin (NPEF16V3, 752488 bytes)
+SHA-256: c122ccf2562dc2c35f20ef0a6ea44f2c06ea8db1c4eaa669e2869f03ce598e43
+
+The tables retain the original NP560 V3.80 resident and flash glyphs.
+Source PRG SHA-256:
+d555609e03ece17f42c1881beeb88361572f18621161de67bc9dc765857089f5
+Source header-inclusive NAND_IMAGE SHA-256:
+44c3c0332ceab48e95202effc1a6c4f52a07384c4149becf039384ea0c0330ce
+
+The production program reads these extracted tables directly. It does not
+load the source PRG or NAND_IMAGE at runtime. The historical Noto-derived
+gbk12.bin is not used or included in this package; its OFL license does not
+apply to these native tables.
+
+The executable also contains 33 original 12-row ASCII control/DEL glyphs
+which are absent from the NPEFONT1 layout. They are copied unchanged from
+the same verified PRG at 0x30F000 + code * 32 (first 24 bytes per glyph).
+Their generated source is native12_control_glyphs.inc; reproduce it with
+extract_np560_gbk_font.py --controls. The two font assets above are unchanged.

@@ -1,0 +1,32 @@
+# Executed at installation time, after the production executable is built.
+# Generator expressions below are resolved for the selected configuration.
+cmake_policy(PUSH)
+if(POLICY CMP0207)
+  cmake_policy(SET CMP0207 NEW)
+endif()
+if("@CMAKE_C_COMPILER_ID@" MATCHES "GNU|Clang" AND EXISTS "@CMAKE_OBJDUMP@")
+  set(CMAKE_GET_RUNTIME_DEPENDENCIES_TOOL objdump)
+  set(CMAKE_GET_RUNTIME_DEPENDENCIES_COMMAND "@CMAKE_OBJDUMP@")
+endif()
+set(npe_runtime_search_paths "@npe_runtime_directories@")
+file(GET_RUNTIME_DEPENDENCIES
+  EXECUTABLES "$<TARGET_FILE:npe-sdl>"
+  DIRECTORIES ${npe_runtime_search_paths}
+  RESOLVED_DEPENDENCIES_VAR npe_runtime_dependencies
+  UNRESOLVED_DEPENDENCIES_VAR npe_missing_dependencies
+  CONFLICTING_DEPENDENCIES_PREFIX npe_conflicting_dependencies
+  PRE_EXCLUDE_REGEXES "^[Aa][Pp][Ii]-[Mm][Ss]-" "^[Ee][Xx][Tt]-[Mm][Ss]-"
+  POST_EXCLUDE_REGEXES
+    ".*[/\\\\][Ss][Yy][Ss][Tt][Ee][Mm]32[/\\\\].*"
+    ".*[/\\\\][Ss][Yy][Ss][Ww][Oo][Ww]64[/\\\\].*")
+if(npe_missing_dependencies OR npe_conflicting_dependencies_FILENAMES)
+  message(FATAL_ERROR
+    "Cannot make a standalone package. Missing DLLs: ${npe_missing_dependencies}; "
+    "conflicting DLLs: ${npe_conflicting_dependencies_FILENAMES}. "
+    "Set NPE_RUNTIME_DIRECTORIES to the required DLL directory.")
+endif()
+foreach(npe_runtime_dependency IN LISTS npe_runtime_dependencies)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/."
+    TYPE FILE FILES "${npe_runtime_dependency}")
+endforeach()
+cmake_policy(POP)

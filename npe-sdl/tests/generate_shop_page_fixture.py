@@ -1,0 +1,10 @@
+from pathlib import Path
+source=Path('npe-sdl/tests/generate_shop_catalog_fixture.py').read_text(encoding='utf-8')
+source=source.replace('native-shop-catalog.json','native-shop-page.json')
+source=source.replace('shop_catalog_native.h','shop_page_native.h')
+source=source.replace('unsigned forcedRow;}','unsigned forcedRow,upper;}')
+source=source.replace('uint8_t seed_catalog[255];}', 'uint8_t seed_catalog[255];unsigned afterSelected,afterFirst,afterLast,afterRow,clearCatalog;}')
+source=source.replace("phases.append('{%d,%d,%s,%s,256}'%(p['key'],len(frames),state(p['after'],item),cache(p['after'])))", "phases.append('{%d,%d,%s,%s,256,%d}'%(p['key'],len(frames),state(p['after'],item),cache(p['after']),p.get('upper',256)))")
+source=source.replace("+byte_array(seed['catalog'])+'},')", "+byte_array(seed['catalog'])+','+','.join(str(r.get(k,256 if k=='afterRow' else 65536)) for k in ['afterSelected','afterFirst','afterLast','afterRow'])+','+str(int(r.get('clearCatalog',False)))+'},')")
+source=source.replace('assert len(rows)==8','assert len(rows)==9')
+exec(compile(source,__file__,'exec'))

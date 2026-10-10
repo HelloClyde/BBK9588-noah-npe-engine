@@ -1,0 +1,60 @@
+import fs from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {GameRuntime,initWasm} from '../../tmp/opennoah-headless.mjs';
+const configs=[0,65535,32768].flatMap(hp=>[{name:`enemy-${hp}`,hp,side:0},{name:`friend-${hp}`,hp,side:1}]);
+const allActors=process.argv.includes('--all-actors');
+const selected=process.argv.slice(2).find(a=>!a.startsWith('--'));
+const output=allActors?'tmp/native-battle-defend-target-execution-all.json':'tmp/native-battle-target-execution-all.json';
+if(!selected){fs.writeFileSync(output,'[]\n');for(const c of configs){const p=spawnSync(process.execPath,[process.argv[1],c.name,...(allActors?['--all-actors']:[])],{stdio:'inherit'});if(p.error)throw p.error;if(p.status)throw Error(c.name+' failed '+p.status);}process.exit(0);}
+const chosen=configs.filter(c=>c.name===selected);if(chosen.length!==1)throw Error('unknown case');
+const exp=await initWasm({module_or_path:fs.readFileSync(new URL('../../tmp/opennoah_wasm_bg.wasm',import.meta.url))});
+const rt=new GameRuntime(fs.readFileSync(new URL('../../tmp/tianjiang-online.opennoah',import.meta.url)),'certified_original_v1');
+const samples=[];
+for(const config of chosen){
+ rt.restoreBytes(fs.readFileSync(new URL('../../tmp/battle-fresh-start.bin',import.meta.url)));
+ const mem=()=>new Uint8Array(exp.memory.buffer),found=[];
+ for(let i=0;i+0x8000<mem().length;i++)if(mem()[i+0x7934]===3&&mem()[i+0x7935]===0&&mem()[i+0x7936]===1&&mem()[i+0x7a58]===9&&mem()[i+0x7a66]===6)found.push(i);
+ if(found.length!==1)throw Error('RAM '+found.length);
+ const base=found[0],a=o=>base+o-(o<0x7000?8:0),w=o=>mem()[a(o)-1]<<8|mem()[a(o)],b=o=>mem()[a(o)-1];
+ const putW=(o,v)=>{mem()[a(o)-1]=(v&65535)>>>8;mem()[a(o)]=v&255;},putB=(o,v)=>mem()[a(o)-1]=v;
+ const execution=[];let collecting=false;
+ const targetState=()=>({targets:[0,1,2].map(i=>b(0x64ce+148*i)),execution:b(0x7acc),actor:b(0x7a9e),menu:b(0x7ac8)});
+ const tick=mask=>{const out=rt.advance(mask);out.free();if(collecting){const s=targetState();if((s.execution===1 || allActors&&s.execution>=2&&s.execution<=3) && (!execution.length || JSON.stringify(execution.at(-1))!==JSON.stringify(s)))execution.push(s);}},idle=n=>{for(let i=0;i<n;++i)tick(0);},key=mask=>{tick(mask);idle(10);};
+ const hero=mem().slice(a(0x69c6)-1,a(0x69c6+148)-1);
+ for(let i=1;i<3;++i)mem().set(hero,a(0x69c6+i*148)-1);
+ putB(0x7afa,3);putB(0x7626,51);putW(0x7ab4,1);idle(30);
+ for(let i=0;i<6;++i){const o=i*148;
+  const hp=i<3?(config.side||i<2?300:0):(i===4?30000:0);
+  putW(0x64a0+o,hp);putW(0x649e+o,i<3?1000:30000);putW(0x64a4+o,i<3?500:0);
+  putW(0x64a6+o,1);putW(0x64a8+o,i<3?999-i:1);putW(0x64aa+o,1);
+  putW(0x64ac+o,1);putW(0x64b0+o,1);putW(0x64ae+o,0);putW(0x64b2+o,0);putB(0x6468+o,i<3?99:10);
+  for(let s=0;s<4;++s)putW(0x648e+o+s*2,0);
+  if(i>=3){putW(0x6492+o,-36);for(let s=0;s<3;++s)putB(0x6469+o+s,0);}
+ }
+ // Current resources/firmware are intact; only isolated RAM words change.
+ putB(0x69de,99);putB(0x69df,6);putB(0x69e0,0);putB(0x7a9e,0);
+ const events=[],state=label=>{const e={label,mode:w(0x7934),actor:b(0x7a9e),menu:b(0x7ac8),targets:targetState().targets,
+  records:Array.from({length:6},(_,i)=>({hp:w(0x64a0+i*148),maximum:w(0x649e+i*148),qi:w(0x64a4+i*148),mental:w(0x64a6+i*148),
+   attack:w(0x64b0+i*148),defense:w(0x64b2+i*148),level:b(0x6468+i*148),experience:w(0x649c+i*148),
+   attackTimer:w(0x6496+i*148),defenseTimer:w(0x6498+i*148),status:[0,1,2,3].map(s=>w(0x648e+i*148+s*2))}))};events.push(e);console.log(JSON.stringify({name:config.name,...e}));};
+ const defend=()=>{
+  if(b(0x7ac8)===10){key(4);key(2);}else if(b(0x7ac8)===20)key(2);
+  if(b(0x7ac8)!==30)throw Error('flag '+b(0x7ac8));key(16);
+  for(let i=0;i<5&&b(0x7a9c)!==2;++i)key(b(0x7a9c)<2?2:1);
+  if(b(0x7a9c)!==2)throw Error('defend row');key(16);
+ };
+ try{
+  state('before');
+  if(config.side){key(4);key(16);key(16);key(1);key(16);}
+  else key(16);
+  if(b(0x7a9e)!==1)throw Error('first command not queued '+b(0x7a9e)+'/'+b(0x7ac8));
+  state('queued');
+  if(config.side){defend();if(b(0x7a9e)!==2)throw Error('second command not queued');state('second-queued');putW(0x64a0+148,config.hp);}
+  else {putW(0x64a0+4*148,config.hp);putW(0x64a0+3*148,30000);}
+  state('changed');collecting=true;defend();idle(700);collecting=false;state('after');if(!execution.length)throw Error('no execution target sample');
+  if(w(0x7934)!==3)throw Error('not continued');
+  samples.push({config,events,execution});
+ }catch(error){samples.push({config,events,execution,error:error.code||String(error)});console.log(JSON.stringify({name:config.name,error:error.code||String(error)}));}
+
+}
+const old=JSON.parse(fs.readFileSync(output));fs.writeFileSync(output,JSON.stringify([...old,...samples],null,2)+'\n');rt.free();

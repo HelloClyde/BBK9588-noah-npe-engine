@@ -1,0 +1,15 @@
+/build*/
+/dist/
+/tmp/
+**/__pycache__/
+*.pyc
+*.npe
+*.NPE
+*.PRG
+*.prg
+*.npes
+*.log
+*.exe
+*.dll
+.env
+.env.*
