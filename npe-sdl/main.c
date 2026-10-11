@@ -10,6 +10,7 @@
 #include <commdlg.h>
 #endif
 #include "controller_input.inc"
+#include "windows_menu.inc"
 
 /* 47:536A..5494 routes I/J/K/L/M (both cases) to the same services as
    up/left/confirm/right/down. The shared item/magic list dispatchers
@@ -3505,6 +3506,7 @@ static int run(int argc, char **argv) {
     window = SDL_CreateWindow("诺亚舟-NPE-引擎", SDL_WINDOWPOS_CENTERED,
                               SDL_WINDOWPOS_CENTERED, 960, 480, SDL_WINDOW_RESIZABLE);
     if (!window) goto sdl_error;
+    if(desktop_menu_attach(window)<0)fprintf(stderr,"cannot create desktop menu\n");
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!renderer) renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_SOFTWARE);
     if (!renderer) goto sdl_error;
@@ -4303,6 +4305,7 @@ parsed_done:
     npe_sound_close(&sound);
     if (texture) SDL_DestroyTexture(texture);
     if (renderer) SDL_DestroyRenderer(renderer);
+    desktop_menu_detach();
     if (window) SDL_DestroyWindow(window);
     npe_free(&file);
 done:
@@ -4314,34 +4317,19 @@ done:
 
 int main(int argc, char **argv) {
 #ifdef _WIN32
-    if(argc==1){
-        WCHAR path[32768]={0};
-        OPENFILENAMEW dialog;
-        memset(&dialog,0,sizeof(dialog));
-        dialog.lStructSize=sizeof(dialog);
-        dialog.lpstrFilter=L"NPE games (*.npe)\0*.npe\0All files (*.*)\0*.*\0\0";
-        dialog.lpstrFile=path;
-        dialog.nMaxFile=(DWORD)(sizeof(path)/sizeof(path[0]));
-        dialog.lpstrTitle=L"选择 NPE 游戏";
-        dialog.Flags=OFN_EXPLORER|OFN_FILEMUSTEXIST|OFN_PATHMUSTEXIST|
-            OFN_NOCHANGEDIR|OFN_HIDEREADONLY;
-        if(!GetOpenFileNameW(&dialog)){
-            DWORD error=CommDlgExtendedError();
-            if(error)MessageBoxW(NULL,L"无法打开文件选择窗口。",L"NPE SDL",MB_OK|MB_ICONERROR);
-            return error?1:0;
-        }
-        int length=WideCharToMultiByte(CP_UTF8,WC_ERR_INVALID_CHARS,path,-1,NULL,0,NULL,NULL);
-        char *selected=length>0?malloc((size_t)length):NULL;
-        if(!selected || !WideCharToMultiByte(CP_UTF8,WC_ERR_INVALID_CHARS,path,-1,
-                                            selected,length,NULL,NULL)){
-            free(selected);
-            MessageBoxW(NULL,L"无法读取所选文件路径。",L"NPE SDL",MB_OK|MB_ICONERROR);
-            return 1;
-        }
+    char *selected=NULL;
+    if(argc==1){selected=desktop_choose_game(NULL);if(!selected)return 0;}
+    int result;
+    for(;;){
         char *args[]={argv[0],selected,NULL};
-        int result=run(2,args);
-        free(selected);return result;
+        result=selected?run(2,args):run(argc,argv);
+        free(selected);selected=desktop_next_game;desktop_next_game=NULL;
+        if(!selected)break;
+        last_pixel_renderer=NULL;
+        game_pad_focus=1;
     }
-#endif
+    return result;
+#else
     return run(argc, argv);
+#endif
 }
