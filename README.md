@@ -58,7 +58,17 @@ ctest --test-dir build-tests -R controller-input --output-on-failure
 
 ## 资源
 
-游戏 NPE、原机固件及个人存档不包含在仓库内。字体来源及使用说明见 [字体说明](npe-sdl/assets/FONT-LICENSE.txt)。SDL2 许可证见 [SDL2-LICENSE.txt](npe-sdl/third-party/SDL2-LICENSE.txt)。本仓库当前未授予项目源码的开源许可证。
+游戏 NPE、原机固件及个人存档不包含在仓库内。字体来源及使用说明见
+[字体来源](npe-sdl/assets/FONT-PROVENANCE.txt) 和 [原字体许可文件](npe-sdl/assets/FONT-LICENSE.txt)。
+SDL2 许可证见 [SDL2-LICENSE.txt](npe-sdl/third-party/SDL2-LICENSE.txt)。
+
+## 许可证
+
+本项目原创引擎、前端、工具及测试源码采用 **GNU General Public License version 2 only**
+（SPDX：`GPL-2.0-only`），完整文本见 [LICENSE](LICENSE)。
+
+第三方库、字体、游戏画面和原机资源不因源码采用 GPL-2.0 而改变各自授权。
+当前原生字体的来源、历史 OFL 文件适用范围及其他资源说明见 [NOTICE](NOTICE.md)。
 
 ## 致谢
 
