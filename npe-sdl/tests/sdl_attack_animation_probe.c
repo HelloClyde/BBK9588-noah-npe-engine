@@ -9,6 +9,7 @@
 static unsigned scenario,calls,frame_checked;
 static unsigned animation_capture,animation_frames,animation_sequences;
 static SDL_Renderer *attack_renderer;
+static Uint32 animation_previous_tick;
 static void attack_frame(void);
 static void attack_animation_present(SDL_Renderer *renderer);
 static SDL_Renderer *attack_create_renderer(SDL_Window *window,int index,Uint32 flags){attack_renderer=SDL_CreateRenderer(window,index,flags);return attack_renderer;}
@@ -55,6 +56,13 @@ static void attack_animation_reference(unsigned frame,uint8_t reference[NPE_WIDT
 static void attack_animation_present(SDL_Renderer *renderer){
     SDL_RenderPresent(renderer);
     if(!animation_capture)return;
+    Uint32 now=SDL_GetTicks();
+    /* Check visible holds as well as pixels: service parameters must not
+       accidentally be treated as SDL milliseconds again. */
+    unsigned minimum=animation_frames==1?180u:animation_frames==3?90u:
+        (animation_frames==5||animation_frames==7)?540u:0u;
+    if(minimum)assert(now-animation_previous_tick>=minimum);
+    animation_previous_tick=now;
     uint8_t reference[NPE_WIDTH*NPE_HEIGHT];uint32_t rgba[NPE_WIDTH*NPE_HEIGHT];
     attack_animation_reference(animation_frames,reference);
     assert(!SDL_RenderReadPixels(renderer,NULL,SDL_PIXELFORMAT_ARGB8888,rgba,NPE_WIDTH*4));

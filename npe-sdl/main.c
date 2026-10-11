@@ -2755,8 +2755,9 @@ static void play_battle_animation(void *context, const NpeWorld *world,
                display->last_action==NPE_BATTLE_ANIMATION_DEFEND &&
                npe_render_battle_defend_restore(world->battle_file,world,display->base))return;
             /* Source30:2592/25A0 waits5 after the initial position,30
-               afterwards. These units still await timing verification. */
-            game_Delay(action==NPE_BATTLE_ANIMATION_POISON?30:step ? 30 : 5);
+               afterwards. WASM commits hold the latter for about 19 ticks at30Hz;
+               each service unit is approximately20ms, not one SDL millisecond. */
+            game_Delay((action==NPE_BATTLE_ANIMATION_POISON?30u:step ? 30u : 5u)*20u);
             if (!step && action!=NPE_BATTLE_ANIMATION_POISON) {
                 int restored=action==NPE_BATTLE_ANIMATION_ENEMY_RECOVERY?
                     npe_render_battle_enemy_recovery_stage(world->battle_file,world,target,1,display->base):
@@ -2868,8 +2869,9 @@ static void play_battle_animation(void *context, const NpeWorld *world,
         display->prepared=1;
         if(npe_render_battle_attack_stage(world->battle_file,world,target,0,display->base))return;
         draw_pixels(display->renderer,display->texture,display->base);
-        /* Source39:5DFA..5E28: fallback pose5, wait10, then pose6. */
-        game_Delay(10);
+        /* Source39:5DFA..5E28: fallback pose5, wait10, then pose6.
+           Use the battle service unit (20ms), keeping this pose visible. */
+        game_Delay(200);
         if(npe_render_battle_attack_stage(world->battle_file,world,target,1,display->base))return;
         draw_pixels(display->renderer,display->texture,display->base);
         return;
