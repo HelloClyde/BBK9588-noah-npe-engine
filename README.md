@@ -59,3 +59,9 @@ ctest --test-dir build-tests -R controller-input --output-on-failure
 ## 资源
 
 游戏 NPE、原机固件及个人存档不包含在仓库内。字体来源及使用说明见 [字体说明](npe-sdl/assets/FONT-LICENSE.txt)。SDL2 许可证见 [SDL2-LICENSE.txt](npe-sdl/third-party/SDL2-LICENSE.txt)。本仓库当前未授予项目源码的开源许可证。
+
+## 致谢
+
+感谢 [NoahWiki](https://noahwiki.purelind.com/) 提供诺亚舟游戏资料、攻略和在线运行参考，为本引擎的开发与行为核对提供了帮助。
+
+相关项目：[np560-plus-emulator](https://github.com/HelloClyde/np560-plus-emulator)，诺亚舟 NP560+ 模拟器。
