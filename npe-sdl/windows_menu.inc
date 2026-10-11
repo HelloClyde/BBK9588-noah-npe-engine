@@ -5,6 +5,73 @@ static HWND desktop_window;
 static WNDPROC desktop_original_proc;
 static HMENU desktop_menu;
 static char *desktop_next_game;
+static int desktop_drag_hit;
+static POINT desktop_drag_origin;
+static RECT desktop_drag_rect;
+static int desktop_drag_left(int hit){return hit==HTLEFT||hit==HTTOPLEFT||hit==HTBOTTOMLEFT;}
+static int desktop_drag_right(int hit){return hit==HTRIGHT||hit==HTTOPRIGHT||hit==HTBOTTOMRIGHT;}
+static int desktop_drag_top(int hit){return hit==HTTOP||hit==HTTOPLEFT||hit==HTTOPRIGHT;}
+static int desktop_drag_bottom(int hit){return hit==HTBOTTOM||hit==HTBOTTOMLEFT||hit==HTBOTTOMRIGHT;}
+static void desktop_drag_end(HWND hwnd){
+    desktop_drag_hit=0;
+    if(GetCapture()==hwnd)ReleaseCapture();
+}
+/* Keep SDL's main loop running instead of entering DefWindowProc's modal
+   move/size loop. Mouse capture supplies updates until release or cancellation. */
+static int desktop_drag_event(HWND hwnd,UINT message,WPARAM wparam){
+    if(message==WM_NCLBUTTONDOWN){
+        int hit=(int)wparam;
+        if(hit!=HTCAPTION && !desktop_drag_left(hit) && !desktop_drag_right(hit) &&
+           !desktop_drag_top(hit) && !desktop_drag_bottom(hit))return 0;
+        if(IsZoomed(hwnd)){
+            if(hit!=HTCAPTION)return 0;
+            POINT cursor;RECT before;GetCursorPos(&cursor);GetWindowRect(hwnd,&before);
+            ShowWindow(hwnd,SW_RESTORE);
+            RECT after;GetWindowRect(hwnd,&after);
+            LONG width=after.right-after.left,old_width=before.right-before.left;
+            LONG offset=old_width>0?MulDiv(cursor.x-before.left,width,old_width):width/2;
+            SetWindowPos(hwnd,NULL,cursor.x-offset,cursor.y-GetSystemMetrics(SM_CYCAPTION)/2,
+                0,0,SWP_NOSIZE|SWP_NOZORDER|SWP_NOACTIVATE);
+        }
+        GetCursorPos(&desktop_drag_origin);GetWindowRect(hwnd,&desktop_drag_rect);
+        desktop_drag_hit=hit;SetCapture(hwnd);return 1;
+    }
+    if(!desktop_drag_hit)return 0;
+    if(message==WM_MOUSEMOVE){
+        POINT cursor;GetCursorPos(&cursor);
+        LONG dx=cursor.x-desktop_drag_origin.x,dy=cursor.y-desktop_drag_origin.y;
+        RECT rect=desktop_drag_rect;
+        if(desktop_drag_hit==HTCAPTION){OffsetRect(&rect,dx,dy);}
+        else{
+            if(desktop_drag_left(desktop_drag_hit))rect.left+=dx;
+            if(desktop_drag_right(desktop_drag_hit))rect.right+=dx;
+            if(desktop_drag_top(desktop_drag_hit))rect.top+=dy;
+            if(desktop_drag_bottom(desktop_drag_hit))rect.bottom+=dy;
+            MINMAXINFO limits;memset(&limits,0,sizeof(limits));
+            SendMessageW(hwnd,WM_GETMINMAXINFO,0,(LPARAM)&limits);
+            LONG min_width=limits.ptMinTrackSize.x,min_height=limits.ptMinTrackSize.y;
+            if(rect.right-rect.left<min_width){
+                if(desktop_drag_left(desktop_drag_hit))rect.left=rect.right-min_width;
+                else rect.right=rect.left+min_width;
+            }
+            if(rect.bottom-rect.top<min_height){
+                if(desktop_drag_top(desktop_drag_hit))rect.top=rect.bottom-min_height;
+                else rect.bottom=rect.top+min_height;
+            }
+        }
+        SetWindowPos(hwnd,NULL,rect.left,rect.top,rect.right-rect.left,rect.bottom-rect.top,
+            SWP_NOZORDER|SWP_NOACTIVATE);return 1;
+    }
+    if(message==WM_LBUTTONUP || message==WM_CANCELMODE || message==WM_CAPTURECHANGED){
+        desktop_drag_end(hwnd);return message==WM_LBUTTONUP;
+    }
+    if(message==WM_KEYDOWN && wparam==VK_ESCAPE){
+        RECT r=desktop_drag_rect;
+        SetWindowPos(hwnd,NULL,r.left,r.top,r.right-r.left,r.bottom-r.top,SWP_NOZORDER|SWP_NOACTIVATE);
+        desktop_drag_end(hwnd);return 1;
+    }
+    return 0;
+}
 enum { DESKTOP_OPEN=41001,DESKTOP_EXIT,DESKTOP_ABOUT };
 static char *desktop_choose_game(HWND owner){
     WCHAR path[32768]={0};OPENFILENAMEW dialog;
@@ -26,6 +93,7 @@ static char *desktop_choose_game(HWND owner){
 }
 static void desktop_quit(void){SDL_Event event;SDL_zero(event);event.type=SDL_QUIT;SDL_PushEvent(&event);}
 static LRESULT CALLBACK desktop_window_proc(HWND hwnd,UINT message,WPARAM wparam,LPARAM lparam){
+    if(desktop_drag_event(hwnd,message,wparam))return 0;
     if(message==WM_COMMAND && HIWORD(wparam)==0){
         switch(LOWORD(wparam)){
         case DESKTOP_OPEN:{
@@ -59,6 +127,7 @@ static int desktop_menu_attach(SDL_Window *window){
 }
 static void desktop_menu_detach(void){
     if(desktop_window){
+        desktop_drag_end(desktop_window);
         if(desktop_original_proc)SetWindowLongPtrW(desktop_window,GWLP_WNDPROC,(LONG_PTR)desktop_original_proc);
         SetMenu(desktop_window,NULL);
     }
