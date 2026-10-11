@@ -11,12 +11,17 @@
 
 来源：[HelloClyde/noah-npe-engine](https://github.com/HelloClyde/noah-npe-engine)，
 固定基线 `942b645ba26693db43c32375f28d53d32d1da099`，作者 helloclyde。
-保留原始 Git 历史、源码和文档。上游 README 明确表示未授予项目源码的开源许可证；
+保留原始 Git 历史、源码和文档。所固定基线的 README 明确表示未授予项目源码的开源许可证；
 本仓库保持这一状态，不能把整个引擎视作 MIT 软件。上游原说明见
 [README-upstream.md](README-upstream.md)。
 
 ## 字体与第三方内容
 
+- 应用图标 `bbk9588/assets/npe-icon.png` 原样复用
+  [BBKH1-NPE](https://github.com/HelloClyde/BBKH1-NPE) 提交
+  `c4a18c76cfc7a3ace4a6232ee4443beeecd34c1a` 的 imagegen 学习机插画，
+  沿用该项目的素材来源说明，不纳入移植层 MIT 授权。详情见
+  [图标来源](bbk9588/assets/README.md)。
 - 使用 `npe-sdl/assets/gbk12-native.bin`、`gbk16-native.bin` 及
   `npe-sdl/native12_control_glyphs.inc`。它们由 NP560 V3.80 原机资源提取，
   来源、输入文件 SHA-256 和再生工具见

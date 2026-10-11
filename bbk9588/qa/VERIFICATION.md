@@ -20,12 +20,26 @@
 - 退出后重新启动，从标题页“继续游戏”读回第一槽；再退出日志为 `NPE9588 result=0`。
 
 最终 BDA 的大小和 SHA-256 记录在安装包 `build.json` 中。
-本次发布候选 BDA：524264 字节，SHA-256
+alpha.1 完整功能验证 BDA：524264 字节，SHA-256
 `3342f7b500c4cd443531de4e5a1a4af226dfd40daa64dfedc4d7274050127df0`。
 用公开 SDK 提交 `9c4cc3333e9e959f70797d2bcdc1d0760ddb4471` 重新构建，
 产物与完成上述模拟器验证的 BDA 逐字节一致，因此复用动态验证记录。
 此提交是 SDK 首次公开全局文件刷新 API 的提交；应用不依赖 SDK 工作区的未提交修改。
 反汇编检查未发现 FPU 加载、存储或运算指令。
+
+## alpha.2 图标更新
+
+使用 H1 NPE 原图，按 9588 SDK 格式打包四份 VX / RGB565 图标，
+尺寸 80×80、80×80、54×54、58×58。检查资源尺寸、透明角、散列及编码后的图像。
+新版 BDA：524264 字节，SHA-256
+`039c13cfef077f2754bc52b4f71ed08dc6c5e007f4d388f048621488f0c0efa2`。
+与 alpha.1 逐字节比较：头部完全一致，可执行载荷完全一致，仅图标资源区变化；
+因此复用 alpha.1 的游戏逻辑、音频与存读档证据。
+
+新版确切 BDA 另在专用新 NAND 中复查启动到标题、ABC/PAD 切换与退出 result=0。
+四份图标视觉检查使用从 BDA 解码的 `packed-icons.png`；未检查固件启动器内图标的实际显示。
+此前专用测试 NAND 的源 RS ECC 校验失败，保留原文件；此次从官方镜像创建全新副本，
+没有修复或覆盖旧镜像及存档。证据见 `icon-result.json`、`icon-title.png`、`icon-keyboard.png`。
 
 详细结果：`emulator-result.json`、`audio-result.json`、`touch-ui-result.json`。截图：
 `title.png`、`map-before.png`、`map-moved.png`、`map-restored.png`、`keyboard.png`、`exit.png`、`continue.png`。

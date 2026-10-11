@@ -73,7 +73,8 @@ SECTIONS {{
                     *objects, '-lgcc', '-o', str(elf)], check=True)
     subprocess.run([objcopy, '-O', 'binary', str(elf), str(raw)], check=True)
     data = bytearray(ENTRY_OFFSET)
-    data[ICON_START:ENTRY_OFFSET] = build_icons(None, (0, 0, 0))
+    icon = HERE / 'assets/npe-icon.png'
+    data[ICON_START:ENTRY_OFFSET] = build_icons(icon, (0, 0, 0))
     data.extend(raw.read_bytes())
     data.extend(bytes((-len(data)) % 4))
     write_header(data, BdaHeaderFields(category=4, file_size_minus_4=len(data)-4,
@@ -93,12 +94,15 @@ SECTIONS {{
     for name in ['gbk12-native.bin', 'gbk16-native.bin', 'FONT-LICENSE.txt', 'FONT-PROVENANCE.txt']:
         shutil.copy2(ROOT / 'npe-sdl/assets' / name, assets / name)
         packaged.append('NPE/assets/' + name)
+    shutil.copy2(HERE / 'assets/README.md', assets / 'ICON-PROVENANCE.md')
+    packaged.append('NPE/assets/ICON-PROVENANCE.md')
     shutil.copy2(HERE / 'README.md', dist / 'README.md')
     shutil.copy2(HERE / 'LICENSE', dist / 'LICENSE.txt')
     shutil.copy2(ROOT / 'SOURCE_NOTICE.md', dist / 'SOURCE_NOTICE.md')
     qa = dist / 'qa'
     qa.mkdir(exist_ok=True)
     for name in ['VERIFICATION.md', 'emulator-result.json', 'audio-result.json', 'touch-ui-result.json',
+                 'icon-result.json', 'packed-icons.png', 'icon-title.png', 'icon-keyboard.png',
                  'title.png', 'map-before.png', 'map-moved.png', 'map-restored.png',
                  'keyboard.png', 'pad.png', 'keyboard-pressed.png', 'exit.png', 'continue.png']:
         source = HERE / 'qa' / name
@@ -108,6 +112,9 @@ SECTIONS {{
     manifest = {'version': (ROOT / 'VERSION').read_text().strip(),
                 'source_commit': subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip(),
                 'upstream_commit': UPSTREAM_COMMIT, 'sdk_commit': sdk_commit,
+                'icon_source_sha256': hashlib.sha256(icon.read_bytes()).hexdigest(),
+                'icon_region_sha256': hashlib.sha256(data[ICON_START:ENTRY_OFFSET]).hexdigest(),
+                'payload_sha256': hashlib.sha256(data[ENTRY_OFFSET:]).hexdigest(),
                 'bda_size': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
     (dist / 'build.json').write_text(json.dumps(manifest, indent=2)+'\n', encoding='utf-8')
     archive = ROOT / 'dist/NPE9588-install.zip'

@@ -1,0 +1,45 @@
+{
+  "version": "0.1.0-alpha.2",
+  "bda_sha256": "039c13cfef077f2754bc52b4f71ed08dc6c5e007f4d388f048621488f0c0efa2",
+  "baseline_bda_sha256": "3342f7b500c4cd443531de4e5a1a4af226dfd40daa64dfedc4d7274050127df0",
+  "header_unchanged": true,
+  "executable_payload_unchanged": true,
+  "payload_sha256": "3691d8688fec825a101aa110e28f5fa000b27480a04681427542b4a343049ef0",
+  "icon_source_sha256": "3aca6f7ff17bbcda409956fe0455670bdd3f3e80f14f6101cbbb9ed7df088ca3",
+  "resources": [
+    {
+      "width": 80,
+      "height": 80,
+      "transparent_pixels": 973,
+      "sha256": "7349d1b78f7928661c40024eee8a482c6bfeca3996277c2a09d6a386971bd3c5"
+    },
+    {
+      "width": 80,
+      "height": 80,
+      "transparent_pixels": 973,
+      "sha256": "7349d1b78f7928661c40024eee8a482c6bfeca3996277c2a09d6a386971bd3c5"
+    },
+    {
+      "width": 54,
+      "height": 54,
+      "transparent_pixels": 466,
+      "sha256": "d5c398124bb0ecb873fa8dffb6d9b911239e2839026c052a2b3738346654499c"
+    },
+    {
+      "width": 58,
+      "height": 58,
+      "transparent_pixels": 517,
+      "sha256": "d9f371e89356e4e7f9b89c5c4ca0e97b16ca4e150a55a4b8b3e9b378529526bb"
+    }
+  ],
+  "emulator_smoke": "PASS",
+  "emulator_checks": [
+    "exact BDA starts Hero and reaches title",
+    "ABC opens QWERTY",
+    "PAD returns to controls",
+    "EXIT returns to firmware with result=0"
+  ],
+  "emulator": "bbk9588-emulator-v0.1.5",
+  "nand": "build-bbk9588/emulator/icon-alpha2-nand.bin",
+  "icon_visual_check": "decoded packed VX preview; native launcher icon display not checked"
+}
