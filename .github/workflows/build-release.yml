@@ -1,0 +1,87 @@
+name: Build and release NPE9588
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUTF8: '1'
+  PYTHONIOENCODING: utf-8
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          submodules: false
+      - name: Initialize fixed SDK (without firmware/emulator submodules)
+        run: |
+          git submodule update --init sdk
+          if ($LASTEXITCODE -ne 0) { throw 'SDK checkout failed' }
+          if ((git -C sdk rev-parse HEAD) -ne '9c4cc3333e9e959f70797d2bcdc1d0760ddb4471') {
+            throw 'Unexpected SDK commit'
+          }
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: sdk/.toolchain
+          key: windows-mipsel-none-elf-15.2.0-8ba866e25c9826ee-v1
+      - name: Install verified toolchain
+        run: ./sdk/scripts/setup_toolchain.ps1
+      - name: Build and statically validate
+        run: |
+          python bbk9588/build.py
+          if ($LASTEXITCODE -ne 0) { throw 'Build failed' }
+          python bbk9588/check_package.py
+          if ($LASTEXITCODE -ne 0) { throw 'Package verification failed' }
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: NPE9588-release-files
+          path: |
+            dist/bbk9588/NPE9588.bda
+            dist/NPE9588-install.zip
+            dist/SHA256SUMS.txt
+          if-no-files-found: error
+          retention-days: 14
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: windows-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: NPE9588-release-files
+          path: dist
+      - name: Verify and publish the same build artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = $env:GITHUB_REF_NAME
+          $version = (Get-Content VERSION -Raw).Trim()
+          if ($tag -ne "v$version" -or $tag -notmatch '^v\d+\.\d+\.\d+(?:-[0-9A-Za-z.]+)?$') {
+            throw 'Tag must match VERSION'
+          }
+          python bbk9588/check_package.py
+          if ($LASTEXITCODE -ne 0) { throw 'Downloaded package verification failed' }
+          $releaseArgs = @('release', 'create', $tag, '--verify-tag', '--title', "NPE9588 $tag",
+            '--notes-file', 'RELEASE_NOTES.md', 'dist/bbk9588/NPE9588.bda',
+            'dist/NPE9588-install.zip', 'dist/SHA256SUMS.txt')
+          if ($version -match '-') { $releaseArgs += '--prerelease' }
+          & gh @releaseArgs
+          if ($LASTEXITCODE -ne 0) { throw 'Release creation failed' }

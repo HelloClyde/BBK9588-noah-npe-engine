@@ -1,0 +1,14 @@
+License scope
+
+The original code and scripts in bbk9588/ are licensed under the MIT License
+in bbk9588/LICENSE. The NPE_BBK9588 integration additions to npe-sdl/main.c
+are also covered by that license.
+The 9588-specific build workflow and the new root documentation are covered
+by the same MIT grant.
+
+This grant does not cover the upstream engine, third-party libraries,
+extracted native font tables/glyphs, game artwork, screenshots of games,
+or the SDK submodule. Their existing terms remain unchanged.
+
+The upstream engine currently has no open-source license grant.
+See SOURCE_NOTICE.md for provenance and the exact licensing boundaries.

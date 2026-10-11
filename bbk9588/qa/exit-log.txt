@@ -1,0 +1,43 @@
+NPE9588 result=0
+NPE title bytes: D3A2D0DBB4ABC6E600CCCCCC
+size: 2053994; sections: 38; indexed bitmaps: 1780; battle bitmaps: 29; animations: 100 groups / 326 frames
+00  0x0000035A      14240 bytes  bitmaps: 0  records: 0
+01  0x00003AFA     576772 bytes  bitmaps: 0  records: 0
+02  0x000907FE      25204 bytes  bitmaps: 0  records: 175
+03  0x00096A72       7979 bytes  bitmaps: 0  records: 55
+04  0x0009899D       5336 bytes  bitmaps: 0  records: 124
+05  0x00099E75       2204 bytes  bitmaps: 0  records: 0
+06  0x0009A711       3108 bytes  bitmaps: 0  records: 0
+07  0x0009B335     585190 bytes  bitmaps: 0  records: 0
+08  0x0012A11B      10727 bytes  bitmaps: 0  records: 6
+09  0x0012CB02      21746 bytes  bitmaps: 0  records: 0
+10  0x00131FF4        248 bytes  bitmaps: 0  records: 5
+11  0x001320EC       1796 bytes  bitmaps: 0  records: 32
+12  0x001327F0        298 bytes  bitmaps: 0  records: 3
+13  0x0013291A        628 bytes  bitmaps: 0  records: 0
+14  0x00132B8E     230560 bytes  bitmaps: 16  records: 0
+15  0x0016B02E     346794 bytes  bitmaps: 0  records: 0
+16  0x001BFAD8      27976 bytes  bitmaps: 0  records: 0  audio13 count: 1332
+17  0x001C6820      15062 bytes  bitmaps: 0  records: 0  audio13 count: 717
+18  0x001CA2F6      12206 bytes  bitmaps: 0  records: 0  audio13 count: 581
+19  0x001CD2A4      23000 bytes  bitmaps: 0  records: 0  audio13 count: 1095
+20  0x001D2C7C      42424 bytes  bitmaps: 0  records: 0  audio13 count: 2020
+21  0x001DD234      36566 bytes  bitmaps: 0  records: 0  audio13 count: 1741
+22  0x001E610A      30244 bytes  bitmaps: 0  records: 0  audio13 count: 1440
+23  0x001ED72E       4120 bytes  bitmaps: 0  records: 0  audio13 count: 196
+24  0x001EE746       5884 bytes  bitmaps: 0  records: 0  audio13 count: 280
+25  0x001EFE42       2062 bytes  bitmaps: 0  records: 0  audio13 count: 98
+26  0x001F0650       2420 bytes  bitmaps: 0  records: 0  audio13 count: 115
+27  0x001F0FC4       3784 bytes  bitmaps: 0  records: 0  audio13 count: 180
+28  0x001F1E8C       1810 bytes  bitmaps: 0  records: 0  audio13 count: 86
+29  0x001F259E       3260 bytes  bitmaps: 0  records: 0  audio13 count: 155
+30  0x001F325A       1958 bytes  bitmaps: 0  records: 0  audio13 count: 93
+31  0x001F3A00        530 bytes  bitmaps: 0  records: 0  audio13 count: 25
+32  0x001F3C12       1034 bytes  bitmaps: 0  records: 0  audio13 count: 49
+33  0x001F401C        194 bytes  bitmaps: 0  records: 0  audio13 count: 9
+34  0x001F40DE        740 bytes  bitmaps: 0  records: 0  audio13 count: 35
+35  0x001F43C2       1978 bytes  bitmaps: 0  records: 0  audio13 count: 94
+36  0x001F4B7C        508 bytes  bitmaps: 0  records: 0  audio13 count: 24
+37  0x001F4D78       2546 bytes  bitmaps: 0  records: 0  audio13 count: 121
+map 1, position 9,12, direction 1, result 1
+map 1, position 10,12, direction 1, result 1

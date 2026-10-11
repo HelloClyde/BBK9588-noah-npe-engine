@@ -13,3 +13,15 @@
 *.dll
 .env
 .env.*
+/bbk9588/qa/[0-9]*.png
+/bbk9588/qa/*.bin
+*.bda
+*.BDA
+*.elf
+*.o
+*.img
+*.nand
+*nand*.bin
+*.sav
+.toolchain/
+.venv/

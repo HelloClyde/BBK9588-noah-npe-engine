@@ -1,0 +1,13 @@
+{
+  "result": "PASS",
+  "checks": [
+    "ABC opens QWERTY",
+    "held F has visible feedback",
+    "M moves title selection",
+    "K opens save slots",
+    "DEL cancels slots",
+    "I restores title selection",
+    "OK starts new game",
+    "PAD returns to controller"
+  ]
+}

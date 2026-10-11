@@ -9,7 +9,20 @@
 #include <windows.h>
 #include <commdlg.h>
 #endif
+#ifdef NPE_BBK9588
+static void *game_pad;
+static int game_pad_id=-1;
+static void game_pad_reset(void) {}
+uint16_t *npe_bbk_game_mode;
+static uint16_t *game_pad_mode;
+static void (*game_pad_show_help)(void);
+static void game_pad_open(void) {}
+static void game_pad_close(void) {}
+static int game_pad_event(SDL_Event *event) {(void)event;return 1;}
+static int game_pad_repeat(SDL_Event *event) {(void)event;return 0;}
+#else
 #include "controller_input.inc"
+#endif
 #include "windows_menu.inc"
 
 /* 47:536A..5494 routes I/J/K/L/M (both cases) to the same services as
@@ -3242,6 +3255,9 @@ static int run(int argc, char **argv) {
     NpeMap map;
     NpeWorld world={0};
     game_pad_mode=&world.game_mode;
+#ifdef NPE_BBK9588
+    npe_bbk_game_mode=&world.game_mode;
+#endif
     game_pad_show_help=show_controller_help;
     BattleAnimationDisplay battle_animation_display={0};
     unsigned system_menu_selection = 0;
@@ -4311,6 +4327,9 @@ parsed_done:
 done:
     free(bytes);
     game_pad_close();game_pad_mode=NULL;
+#ifdef NPE_BBK9588
+    npe_bbk_game_mode=NULL;
+#endif
     SDL_Quit();
     return result;
 }
