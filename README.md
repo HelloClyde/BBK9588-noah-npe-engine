@@ -1,8 +1,30 @@
-# NPE SDL 引擎
+# 诺亚舟-NPE-引擎
 
 纯 C11 + SDL2 实现的独立 NPE 游戏运行程序。直接读取游戏资源；运行时不依赖 DMCU 模拟器、PRG 固件、QEMU、Python 或网页 WASM。
 
 当前为开发版。已实现地图、剧情、战斗、人物与装备、商店、自身三槽存档、音频播放和手柄输入；完整跨游戏兼容仍在完善。最新状态见 [plan.md](plan.md)。
+
+## 下载与使用
+
+在 [GitHub Releases](https://github.com/HelloClyde/noah-npe-engine/releases) 下载 Windows x64 便携包，解压后双击 `npe-sdl.exe` 选择游戏，或将 `.npe` 文件拖到 EXE 上。保留 `assets` 和 `SDL2.dll`。
+
+支持键盘和标准手柄；手柄 Start 打开按键说明。游戏文件需自行提供。
+
+## 游戏截图
+
+以下为当前 C＋SDL 程序实际渲染的《天降风云 V1.3》画面。战斗图通过内置战斗预览入口获取。
+
+### 标题
+
+![天降风云标题](docs/screenshots/title.png)
+
+### 地图
+
+![地图探索](docs/screenshots/map.png)
+
+### 战斗
+
+![战斗画面](docs/screenshots/battle.png)
 
 ## 构建
 

@@ -3502,7 +3502,7 @@ static int run(int argc, char **argv) {
             else npe_world_sound_map_loaded(&world);
         }
     }
-    window = SDL_CreateWindow("NPE resource viewer", SDL_WINDOWPOS_CENTERED,
+    window = SDL_CreateWindow("诺亚舟-NPE-引擎", SDL_WINDOWPOS_CENTERED,
                               SDL_WINDOWPOS_CENTERED, 960, 480, SDL_WINDOW_RESIZABLE);
     if (!window) goto sdl_error;
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
@@ -3558,7 +3558,7 @@ static int run(int argc, char **argv) {
                      "NPE battle assets - image %u/%u",
                      index + 1, file.battle_bitmap_count);
         else if (walk_preview)
-            snprintf(caption, sizeof(caption), "NPE");
+            snprintf(caption, sizeof(caption), "诺亚舟-NPE-引擎");
         else if (animation_preview)
             snprintf(caption, sizeof(caption),
                      "NPE animation - group %u/%u, frame %u/%u%s",
