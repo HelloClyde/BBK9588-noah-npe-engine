@@ -25,16 +25,26 @@ def main():
     with zipfile.ZipFile(files['NPE9588-install.zip']) as package:
         if package.testzip() is not None:
             raise RuntimeError('Broken ZIP')
-        required = {'NPE9588.bda', 'README.md', 'LICENSE.txt', 'SOURCE_NOTICE.md', 'build.json',
+        application = '应用/程序/NPE9588.bda'
+        required = {application, 'README.md', '说明/LICENSE.txt', '说明/SOURCE_NOTICE.md', '说明/build.json',
                     'NPE/assets/gbk12-native.bin', 'NPE/assets/gbk16-native.bin',
                     'NPE/assets/FONT-LICENSE.txt', 'NPE/assets/FONT-PROVENANCE.txt',
-                    'NPE/assets/ICON-PROVENANCE.md','NPE-ENGINE-LICENSE.txt','NPE-ENGINE-NOTICE.md'}
+                    'NPE/assets/ICON-PROVENANCE.md','说明/NPE-ENGINE-LICENSE.txt','说明/NPE-ENGINE-NOTICE.md'}
         if not required.issubset(package.namelist()):
             raise RuntimeError('Incomplete install layout')
         for name in package.namelist():
             if name.startswith('/') or '..' in Path(name).parts or name.lower().endswith(('.npe', '.prg', '.npes', '.sav')):
                 raise RuntimeError('Unexpected private/resource file: ' + name)
-        manifest = json.loads(package.read('build.json'))
+            if name != 'README.md' and name.split('/')[0] not in {'应用','NPE','说明'}:
+                raise RuntimeError('Unexpected install root entry: ' + name)
+            if name.lower().endswith('.bda') and name != application:
+                raise RuntimeError('BDA must be installed under 应用/程序: ' + name)
+        for font in ['gbk12-native.bin','gbk16-native.bin']:
+            if package.read('NPE/assets/'+font) != (ROOT/'npe-sdl/assets'/font).read_bytes():
+                raise RuntimeError('Packaged font differs from source: ' + font)
+        manifest = json.loads(package.read('说明/build.json'))
+        if manifest.get('install_layout') != {'application':application, 'resources':'NPE', 'documentation':'说明'}:
+            raise RuntimeError('Install layout metadata mismatch')
         if manifest['version'] != (ROOT / 'VERSION').read_text().strip():
             raise RuntimeError('Version mismatch')
         if manifest['upstream_commit'] != '567ae64c1ba67c8a55d0c4fbdf874f9ac58471cf':
@@ -44,7 +54,7 @@ def main():
         commit = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()
         if manifest['source_commit'] != commit:
             raise RuntimeError('Artifact source commit does not match this checkout')
-        if manifest['sha256'] != sums['NPE9588.bda'] or package.read('NPE9588.bda') != files['NPE9588.bda'].read_bytes():
+        if manifest['sha256'] != sums['NPE9588.bda'] or package.read(application) != files['NPE9588.bda'].read_bytes():
             raise RuntimeError('Install ZIP does not contain the released BDA')
         if manifest['bda_size'] != files['NPE9588.bda'].stat().st_size:
             raise RuntimeError('BDA size mismatch')

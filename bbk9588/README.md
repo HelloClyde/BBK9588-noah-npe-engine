@@ -4,8 +4,15 @@
 
 ## 安装
 
-将 `NPE9588.bda` 放入设备应用目录；把整个 `NPE` 目录复制到 A 盘根目录，
-字体路径必须为 `A:\NPE\assets\gbk12-native.bin` 和 `gbk16-native.bin`。
+将安装包中的 `应用` 和 `NPE` 两个目录复制、合并到设备 `A:\` 根目录，保持目录层级：
+
+```text
+A:\应用\程序\NPE9588.bda
+A:\NPE\assets\gbk12-native.bin
+A:\NPE\assets\gbk16-native.bin
+```
+
+安装包根目录的 `README.md` 是安装说明；`说明` 目录含许可证、来源、构建信息和验证资料，留在电脑即可。
 游戏 NPE 文件自行放入 A 盘任意目录，启动时通过系统文件选择器打开。
 程序在 `A:\NPE\saves` 下按游戏指纹保存三个独立存档，日志为 `A:\NPE\NPE.LOG`。
 建议将游戏放入 `A:\NPE`，文件选择器默认从该目录打开。

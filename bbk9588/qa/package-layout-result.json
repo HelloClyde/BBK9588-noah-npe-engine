@@ -1,0 +1,26 @@
+{
+  "result": "PASS",
+  "date": "2026-10-13",
+  "version": "0.1.0-alpha.6",
+  "application": "应用/程序/NPE9588.bda",
+  "resources": "NPE/assets",
+  "documentation": "说明",
+  "top_level": [
+    "NPE",
+    "README.md",
+    "应用",
+    "说明"
+  ],
+  "bda_sha256": "a4655cebe0b1aca5142fd2f4a7ab4eb94e4e1cc0c9d31eda5983d7b6ec7dbf7f",
+  "bda_identical_to": "v0.1.0-alpha.5 published BDA",
+  "verified": [
+    "Chinese ZIP filenames use UTF-8 flag",
+    "extract to fresh directory",
+    "application path and exact BDA bytes",
+    "resource font paths and bytes",
+    "documentation and licenses grouped",
+    "root BDA removed"
+  ],
+  "sdk_commit": "9c4cc3333e9e959f70797d2bcdc1d0760ddb4471",
+  "dynamic_verification": "Reuse alpha.5: executable bytes unchanged"
+}

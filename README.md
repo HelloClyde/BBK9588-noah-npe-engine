@@ -2,7 +2,7 @@
 
 Noah NPE 引擎的步步高 BBK 9588 原生 BDA 移植版。读取游戏资源，复用上游 C 引擎；
 在 240×320 屏幕上保留 240×120 游戏像素比例，配有圆角操作面板和 QWERTY 软键盘。
-当前版本为 `0.1.0-alpha.5`。
+当前版本为 `0.1.0-alpha.6`。
 
 <img src="bbk9588/assets/npe-icon.png" width="96" alt="NPE 应用图标">
 
@@ -19,9 +19,9 @@ Noah NPE 引擎的步步高 BBK 9588 原生 BDA 移植版。读取游戏资源�
 若尚无已发布版本，可按下方命令自行构建。
 
 1. 下载并解压 `NPE9588-install.zip`。
-2. 将 `NPE9588.bda` 复制到 BBK 9588 的应用目录，例如 `A:\应用\程序\`。
-3. 将安装包中的整个 `NPE` 文件夹复制到 A 盘根目录，保留
-   `A:\NPE\assets\gbk12-native.bin` 和 `gbk16-native.bin`。
+2. 将解压后的 `应用` 和 `NPE` 两个文件夹一起复制、合并到 BBK 9588 的 `A:\` 根目录，保持目录层级。
+3. 最终程序路径为 `A:\应用\程序\NPE9588.bda`，字体路径为
+   `A:\NPE\assets\gbk12-native.bin` 和 `gbk16-native.bin`。`说明` 文件夹留在电脑即可。
 4. 自行提供游戏 `.npe` 文件，可放在 `A:\NPE\`。从设备应用入口启动 NPE9588，
    在文件选择器中打开游戏。
 

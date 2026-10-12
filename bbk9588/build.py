@@ -114,6 +114,7 @@ SECTIONS {{
                  'header-muted.png', 'header-restored.png',
                  'about-result.json', 'about.png', 'about-keyboard.png',
                  'about-restored.png', 'about-map.png', 'about-map-restored.png', 'about-exit.png', 'about-audio.json',
+                 'package-layout-result.json',
                  'title.png', 'map-before.png', 'map-moved.png', 'map-restored.png',
                  'keyboard.png', 'pad.png', 'keyboard-pressed.png', 'exit.png', 'continue.png']:
         source = HERE / 'qa' / name
@@ -128,11 +129,19 @@ SECTIONS {{
                 'payload_sha256': hashlib.sha256(data[ENTRY_OFFSET:]).hexdigest(),
                 'bda_size': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
     manifest.update(header)
+    manifest['install_layout'] = {'application':'应用/程序/NPE9588.bda',
+                                  'resources':'NPE', 'documentation':'说明'}
     (dist / 'build.json').write_text(json.dumps(manifest, indent=2)+'\n', encoding='utf-8')
     archive = ROOT / 'dist/NPE9588-install.zip'
     with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED) as package:
         for name in sorted(packaged):
-            info = zipfile.ZipInfo(name, date_time=(2020, 1, 1, 0, 0, 0))
+            if name == 'NPE9588.bda':
+                install_name = '应用/程序/NPE9588.bda'
+            elif name == 'README.md' or name.startswith('NPE/'):
+                install_name = name
+            else:
+                install_name = '说明/' + name
+            info = zipfile.ZipInfo(install_name, date_time=(2020, 1, 1, 0, 0, 0))
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             package.writestr(info, (dist / name).read_bytes())
