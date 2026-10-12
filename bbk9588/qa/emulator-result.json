@@ -7,17 +7,17 @@
       12
     ],
     "bytes": 2366,
-    "sha256": "d5a10615f4965ea90f38cc6f32e1aab43552b4be4f4de4ddf946c57e32af1d4c",
+    "sha256": "89bfd07e9194c2c202d8e0f6b03986719fa906c9959545be28cb89dfbf3ae963",
     "path": "/NPE/saves/save-e6de0d3574efa98c.npes"
   },
   "moved": {
     "position": [
       1,
-      10,
+      11,
       12
     ],
     "bytes": 2366,
-    "sha256": "8ddf19669a5108aec6a104d905f3b519274752922fc4079859f7e771a9c0e87f",
+    "sha256": "72ec92cb82e9094dbd0c15051a1a0993372a9811cc45ab31b4659f0f11cd3b70",
     "path": "/NPE/saves/save-e6de0d3574efa98c-2.npes"
   },
   "restored": {
@@ -27,18 +27,19 @@
       12
     ],
     "bytes": 2366,
-    "sha256": "d5a10615f4965ea90f38cc6f32e1aab43552b4be4f4de4ddf946c57e32af1d4c",
+    "sha256": "89bfd07e9194c2c202d8e0f6b03986719fa906c9959545be28cb89dfbf3ae963",
     "path": "/NPE/saves/save-e6de0d3574efa98c.npes"
   },
   "audio_transport": {
-    "received_packets": 9046,
-    "received_bytes": 15959324,
+    "received_packets": 5471,
+    "received_bytes": 9670608,
     "queued_packets": 128,
     "dropped_packets": 0,
     "ws_sent_packets": 0,
     "ws_sent_bytes": 0,
     "ws_connections": 0,
-    "ws_connection_peak": 0
+    "ws_connection_peak": 1
   },
-  "nand": "build-bbk9588/emulator/bbk9588_nand.bin"
+  "movement_input": "two physical taps and 650ms virtual Right hold",
+  "nand": "build-bbk9588/emulator/final-alpha3-nand.bin"
 }

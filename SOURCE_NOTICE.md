@@ -10,10 +10,13 @@
 ## 上游引擎
 
 来源：[HelloClyde/noah-npe-engine](https://github.com/HelloClyde/noah-npe-engine)，
-固定基线 `942b645ba26693db43c32375f28d53d32d1da099`，作者 helloclyde。
-保留原始 Git 历史、源码和文档。所固定基线的 README 明确表示未授予项目源码的开源许可证；
-本仓库保持这一状态，不能把整个引擎视作 MIT 软件。上游原说明见
-[README-upstream.md](README-upstream.md)。
+固定基线 `567ae64c1ba67c8a55d0c4fbdf874f9ac58471cf`，作者 helloclyde。
+保留原始 Git 历史、源码和文档。此次同步包含上游 GPL-2.0-only 授权及战斗等待时间修复；
+其完整许可证与原始来源声明保留在
+[NPE-ENGINE-GPL-2.0.txt](npe-sdl/third-party/NPE-ENGINE-GPL-2.0.txt) 和
+[NPE-ENGINE-NOTICE.md](npe-sdl/third-party/NPE-ENGINE-NOTICE.md)，安装包也携带两份文本。
+9588 原创移植层仍单独按 MIT 授权，不将整个引擎标记为 MIT。原机字库、游戏和截图
+不适用引擎的 GPL 授权。上游说明见 [README-upstream.md](README-upstream.md)。
 
 ## 字体与第三方内容
 

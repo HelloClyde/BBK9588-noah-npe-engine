@@ -12,6 +12,8 @@ from urllib.parse import urlparse
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--base', default='http://127.0.0.1:8026')
+    ap.add_argument('--out',type=Path,default=Path(__file__).resolve().parent/'qa/audio-result.json')
+    ap.add_argument('--expect-muted',action='store_true')
     args = ap.parse_args()
     url = urlparse(args.base)
     result = {'packets': 0, 'samples': 0, 'peak': 0, 'sum_squares': 0, 'formats': []}
@@ -60,8 +62,11 @@ def main():
             if fmt not in result['formats']:
                 result['formats'].append(fmt)
     result['rms'] = math.sqrt(result.pop('sum_squares')/result['samples'])
-    assert result['peak'] > 0, 'Only silence received'
-    out = Path(__file__).resolve().parent / 'qa/audio-result.json'
+    if args.expect_muted:
+        assert result['peak']==0,'Muted output is not silent'
+    else:
+        assert result['peak'] > 0, 'Only silence received'
+    out = args.out
     out.write_text(json.dumps(result, indent=2)+'\n', encoding='utf-8')
     print(json.dumps(result, indent=2))
 

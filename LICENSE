@@ -11,5 +11,6 @@ extracted native font tables/glyphs, the imported H1 NPE application icon,
 game artwork, screenshots of games,
 or the SDK submodule. Their existing terms remain unchanged.
 
-The pinned upstream engine revision has no open-source license grant recorded.
+The pinned upstream engine is GPL-2.0-only; its text and notice are in
+npe-sdl/third-party/NPE-ENGINE-GPL-2.0.txt and NPE-ENGINE-NOTICE.md.
 See SOURCE_NOTICE.md for provenance and the exact licensing boundaries.

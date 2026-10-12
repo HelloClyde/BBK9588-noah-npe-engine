@@ -12,7 +12,7 @@ import zipfile
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 SDK_COMMIT = '9c4cc3333e9e959f70797d2bcdc1d0760ddb4471'
-UPSTREAM_COMMIT = '942b645ba26693db43c32375f28d53d32d1da099'
+UPSTREAM_COMMIT = '567ae64c1ba67c8a55d0c4fbdf874f9ac58471cf'
 
 def main():
     ap = argparse.ArgumentParser()
@@ -90,7 +90,7 @@ SECTIONS {{
         raise RuntimeError(report['errors'])
     assets = dist / 'NPE/assets'
     assets.mkdir(parents=True, exist_ok=True)
-    packaged = ['NPE9588.bda', 'README.md', 'LICENSE.txt', 'SOURCE_NOTICE.md', 'build.json']
+    packaged = ['NPE9588.bda', 'README.md', 'LICENSE.txt', 'SOURCE_NOTICE.md', 'build.json', 'NPE-ENGINE-LICENSE.txt', 'NPE-ENGINE-NOTICE.md']
     for name in ['gbk12-native.bin', 'gbk16-native.bin', 'FONT-LICENSE.txt', 'FONT-PROVENANCE.txt']:
         shutil.copy2(ROOT / 'npe-sdl/assets' / name, assets / name)
         packaged.append('NPE/assets/' + name)
@@ -99,10 +99,14 @@ SECTIONS {{
     shutil.copy2(HERE / 'README.md', dist / 'README.md')
     shutil.copy2(HERE / 'LICENSE', dist / 'LICENSE.txt')
     shutil.copy2(ROOT / 'SOURCE_NOTICE.md', dist / 'SOURCE_NOTICE.md')
+    shutil.copy2(ROOT / 'npe-sdl/third-party/NPE-ENGINE-GPL-2.0.txt', dist / 'NPE-ENGINE-LICENSE.txt')
+    shutil.copy2(ROOT / 'npe-sdl/third-party/NPE-ENGINE-NOTICE.md', dist / 'NPE-ENGINE-NOTICE.md')
     qa = dist / 'qa'
     qa.mkdir(exist_ok=True)
     for name in ['VERIFICATION.md', 'emulator-result.json', 'audio-result.json', 'touch-ui-result.json',
                  'icon-result.json', 'packed-icons.png', 'icon-title.png', 'icon-keyboard.png',
+                 'symbols.png', 'functions.png', 'keyboard-shift.png', 'audio-muted.json',
+                 'audio-restored.json', 'audio-device-log.txt', 'alpha3-result.json',
                  'title.png', 'map-before.png', 'map-moved.png', 'map-restored.png',
                  'keyboard.png', 'pad.png', 'keyboard-pressed.png', 'exit.png', 'continue.png']:
         source = HERE / 'qa' / name

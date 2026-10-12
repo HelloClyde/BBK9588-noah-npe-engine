@@ -1,0 +1,33 @@
+{
+  "result": "PASS",
+  "date": "2026-10-13",
+  "upstream_commit": "567ae64c1ba67c8a55d0c4fbdf874f9ac58471cf",
+  "sdk_commit": "9c4cc3333e9e959f70797d2bcdc1d0760ddb4471",
+  "bda_size": 529328,
+  "bda_sha256": "426a93f94f78609cb02ffe06ff7a9196127a8b86f1dd5441551d6a90498eb0b6",
+  "emulator": "bbk9588-emulator-v0.1.5",
+  "nand": "build-bbk9588/emulator/final-alpha3-nand.bin",
+  "host_tests": [
+    "PCM inherited attenuation 96 to 0",
+    "1024-byte writes and silent attenuation restore",
+    "mute/unmute, write failure",
+    "95 printable ASCII characters and modifiers",
+    "short direction tap, hold repeat, delayed release",
+    "delayed touch Escape suppression and physical Escape release",
+    "draw bounds and game-plane preservation"
+  ],
+  "emulator_tests": [
+    "new game/map",
+    "two physical Right taps and 650ms virtual Right hold",
+    "save/load full save SHA256 restored",
+    "normal/muted/restored PCM, 100 packets each",
+    "physical Escape opens and closes menu",
+    "EXIT returns to firmware and restores original attenuation",
+    "all keyboard page captures",
+    "keyboard M/K title navigation and continue from first saved slot",
+    "second EXIT result=0"
+  ],
+  "true_hardware_tested": false,
+  "chinese_input": false,
+  "header_image": "preview only, not included in BDA"
+}

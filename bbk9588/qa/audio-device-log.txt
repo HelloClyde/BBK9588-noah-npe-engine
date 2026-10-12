@@ -1,0 +1,12 @@
+NPE9588 PCM 22050 Hz / 16-bit / mono
+original_attenuation=0
+applied_initial_attenuation=0
+requested_final_attenuation=0
+restored_attenuation=0
+blocks=6870
+bytes=7034880
+callbacks=4986
+input_peak=32768
+short_writes=0
+ready_misses=522836
+write_error=0

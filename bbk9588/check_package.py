@@ -27,7 +27,7 @@ def main():
         required = {'NPE9588.bda', 'README.md', 'LICENSE.txt', 'SOURCE_NOTICE.md', 'build.json',
                     'NPE/assets/gbk12-native.bin', 'NPE/assets/gbk16-native.bin',
                     'NPE/assets/FONT-LICENSE.txt', 'NPE/assets/FONT-PROVENANCE.txt',
-                    'NPE/assets/ICON-PROVENANCE.md'}
+                    'NPE/assets/ICON-PROVENANCE.md','NPE-ENGINE-LICENSE.txt','NPE-ENGINE-NOTICE.md'}
         if not required.issubset(package.namelist()):
             raise RuntimeError('Incomplete install layout')
         for name in package.namelist():
@@ -36,6 +36,8 @@ def main():
         manifest = json.loads(package.read('build.json'))
         if manifest['version'] != (ROOT / 'VERSION').read_text().strip():
             raise RuntimeError('Version mismatch')
+        if manifest['upstream_commit'] != '567ae64c1ba67c8a55d0c4fbdf874f9ac58471cf':
+            raise RuntimeError('Upstream mismatch')
         if manifest['sdk_commit'] != '9c4cc3333e9e959f70797d2bcdc1d0760ddb4471':
             raise RuntimeError('SDK mismatch')
         commit = subprocess.check_output(['git', '-C', str(ROOT), 'rev-parse', 'HEAD'], text=True).strip()

@@ -32,7 +32,7 @@ def main():
 
     def touch(x, y):
         request('/api/touch', True, x=x, y=y, down=1)
-        time.sleep(.2)
+        time.sleep(.18 if (x,y)==(60,280) else .5)
         request('/api/touch', True, x=x, y=y, down=0)
         time.sleep(1.2)
 
@@ -47,15 +47,15 @@ def main():
         return value
 
     def save(name, slot_number=1):
-        touch(90, 256)  # F4: open system menu
+        touch(27, 166)  # F4: open system menu
         for _ in range(3):
-            touch(90, 216)  # Down: System
-        touch(210, 216)
-        touch(90, 216)  # Save
-        touch(210, 216)
+            touch(60, 280)  # Down: System
+        touch(178, 244)
+        touch(60, 280)  # Save
+        touch(178, 244)
         for _ in range(slot_number-1):
-            touch(90, 216)
-        touch(210, 216)
+            touch(60, 280)
+        touch(178, 244)
         entries = json.loads(request('/api/files', path='/NPE/saves'))['entries']
         suffix = '.npes' if slot_number == 1 else f'-{slot_number}.npes'
         slot = next(e['path'] for e in entries if e['name'].endswith(suffix) and
@@ -77,20 +77,24 @@ def main():
         time.sleep(.2)
         request('/api/key', True, code=7, down=0)
         time.sleep(1.2)
+    request('/api/touch', True, x=98, y=242, down=1)
+    time.sleep(.65)
+    request('/api/touch', True, x=98, y=242, down=0)
+    time.sleep(1.5)
     moved = save('map-moved', 2)
-    assert moved['position'] != before['position'], 'Right input did not move the player'
-    touch(90, 256)
+    assert moved['position'] != before['position'], 'Physical Right and virtual hold did not move the player'
+    touch(27, 166)
     for _ in range(3):
-        touch(90, 216)
-    touch(210, 216)  # System
-    touch(210, 216)  # Load
-    touch(210, 216)  # slot one
+        touch(60, 280)
+    touch(178, 244)  # System
+    touch(178, 244)  # Load
+    touch(178, 244)  # slot one
     restored = save('map-restored')
     assert restored['position'] == before['position'], (before, restored)
     transport = json.loads(request('/api/status'))['audio_transport']
     assert transport['received_packets'] > 0
     report = {'result': 'PASS', 'before': before, 'moved': moved, 'restored': restored,
-              'audio_transport': transport,
+              'audio_transport': transport, 'movement_input': 'two physical taps and 650ms virtual Right hold',
               'nand': nand.relative_to(Path(__file__).resolve().parents[1]).as_posix()}
     (OUT / 'emulator-result.json').write_text(json.dumps(report, indent=2)+'\n', encoding='utf-8')
     print(json.dumps(report, indent=2))
