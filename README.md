@@ -2,12 +2,13 @@
 
 Noah NPE 引擎的步步高 BBK 9588 原生 BDA 移植版。读取游戏资源，复用上游 C 引擎；
 在 240×320 屏幕上保留 240×120 游戏像素比例，配有圆角操作面板和 QWERTY 软键盘。
-当前版本为 `0.1.0-alpha.3`。
+当前版本为 `0.1.0-alpha.4`。
 
 <img src="bbk9588/assets/npe-icon.png" width="96" alt="NPE 应用图标">
 
 应用图标复用 H1 NPE 的学习机图标；来源与 9588 编码方式见
-[图标说明](bbk9588/assets/README.md)。
+[图标说明](bbk9588/assets/README.md)。顶部使用 GPT Image 生成的橙金色 NOAH NPE 图片标识，
+按 100×24 像素嵌入程序，不需要额外复制图片文件。
 
 **许可范围：只有 9588 移植层采用 MIT；上游引擎采用 GPL-2.0-only，原机字库许可状态保持原样。**
 详见 [来源与许可范围](SOURCE_NOTICE.md)，不要将整个项目视为 MIT 软件。
@@ -55,13 +56,13 @@ SDK 的嵌套模拟器子模块不参与构建，无需递归下载。输出：
 
 | 地图与操作面板 | 英文软键盘 |
 | --- | --- |
-| ![地图操作](bbk9588/qa/pad.png) | ![英文键盘](bbk9588/qa/keyboard.png) |
+| ![地图操作](bbk9588/qa/header-pad.png) | ![英文键盘](bbk9588/qa/header-keyboard.png) |
 
 | 符号页 | 功能键页 |
 | --- | --- |
-| ![符号键盘](bbk9588/qa/symbols.png) | ![功能键盘](bbk9588/qa/functions.png) |
+| ![符号键盘](bbk9588/qa/header-symbols.png) | ![功能键盘](bbk9588/qa/header-functions.png) |
 
-![标题菜单](bbk9588/qa/title.png)
+![标题菜单](bbk9588/qa/header-title.png)
 
 ## 依赖
 

@@ -4,6 +4,7 @@ import hashlib
 import json
 import subprocess
 import struct
+import re
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,6 +49,16 @@ def main():
         if manifest['bda_size'] != files['NPE9588.bda'].stat().st_size:
             raise RuntimeError('BDA size mismatch')
         data = files['NPE9588.bda'].read_bytes()
+        header_png = ROOT / 'bbk9588/assets/header-logo.png'
+        if manifest['header_source_sha256'] != hashlib.sha256(header_png.read_bytes()).hexdigest():
+            raise RuntimeError('Unexpected header image source')
+        header_text = (ROOT / 'bbk9588/assets/header_rgb565.h').read_text(encoding='ascii')
+        pixels = b''.join(int(word,16).to_bytes(2,'little') for word in re.findall(r'0x([0-9a-f]{4})',header_text))
+        width,height = manifest['header_size']
+        if len(pixels) != width*height*2 or not (1 <= width <= 150 and height == 24):
+            raise RuntimeError('Malformed native header image')
+        if manifest['header_pixels_sha256'] != hashlib.sha256(pixels).hexdigest() or pixels not in data[0x95f8:]:
+            raise RuntimeError('Header image is not embedded in executable')
         source = ROOT / 'bbk9588/assets/npe-icon.png'
         if manifest['icon_source_sha256'] != hashlib.sha256(source.read_bytes()).hexdigest():
             raise RuntimeError('Unexpected icon source')

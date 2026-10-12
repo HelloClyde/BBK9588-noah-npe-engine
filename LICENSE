@@ -8,6 +8,7 @@ by the same MIT grant.
 
 This grant does not cover the upstream engine, third-party libraries,
 extracted native font tables/glyphs, the imported H1 NPE application icon,
+the generated header image and its compiled pixel data,
 game artwork, screenshots of games,
 or the SDK submodule. Their existing terms remain unchanged.
 

@@ -1,4 +1,5 @@
 #include "touch_ui.h"
+#include "assets/header_rgb565.h"
 
 #define RGB(r,g,b) ((((r) >> 3) << 11) | (((g) >> 2) << 5) | ((b) >> 3))
 enum {
@@ -182,10 +183,8 @@ static void arrow(Uint8 *p,int x,int y,int key,Uint16 c) {
 
 void npe_touch_draw(Uint8 *p,int page,Uint16 modifiers,int volume,int audio_error,int pressed_x,int pressed_y) {
     fill(p,0,0,240,28,BG);
-    /* Compact emblem, title and device mark leave the game unobstructed. */
-    rounded(p,7,6,14,14,5,MINT);
-    fill(p,11,10,2,6,BG);fill(p,13,12,2,2,BG);fill(p,15,10,2,6,BG);
-    text(p,28,6,"NOAH",2,INK);
+    for(int y=0;y<NPE_HEADER_HEIGHT;++y)for(int x=0;x<NPE_HEADER_WIDTH;++x)
+        fill(p,7+x,1+y,1,1,npe_header_pixels[y*NPE_HEADER_WIDTH+x]);
     char status[16];
     if(audio_error)memcpy(status,"SOUND ERR",10);
     else if(!volume)memcpy(status,"MUTE",5);

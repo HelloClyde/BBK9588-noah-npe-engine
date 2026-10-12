@@ -31,6 +31,8 @@ def main():
     from bda_packer.build import ENTRY_OFFSET, ENTRY_VA, ICON_START, ICON_SIZES, build_icons, find_tool
     from bda_packer.header import BdaHeaderFields, write_header
     from bda_packer.validate import validate_bda
+    from header_asset import compile_header
+    header = compile_header(sdk)
     toolchain = sdk / '.toolchain'
     if not (toolchain / 'bin/mipsel-none-elf-gcc.exe').exists():
         toolchain /= 'g++-mipsel-none-elf-15.2.0'
@@ -107,6 +109,9 @@ SECTIONS {{
                  'icon-result.json', 'packed-icons.png', 'icon-title.png', 'icon-keyboard.png',
                  'symbols.png', 'functions.png', 'keyboard-shift.png', 'audio-muted.json',
                  'audio-restored.json', 'audio-device-log.txt', 'alpha3-result.json',
+                 'header-result.json', 'header-title.png', 'header-keyboard.png', 'header-pad.png',
+                 'header-symbols.png', 'header-functions.png', 'header-exit.png',
+                 'header-muted.png', 'header-restored.png',
                  'title.png', 'map-before.png', 'map-moved.png', 'map-restored.png',
                  'keyboard.png', 'pad.png', 'keyboard-pressed.png', 'exit.png', 'continue.png']:
         source = HERE / 'qa' / name
@@ -120,6 +125,7 @@ SECTIONS {{
                 'icon_region_sha256': hashlib.sha256(data[ICON_START:ENTRY_OFFSET]).hexdigest(),
                 'payload_sha256': hashlib.sha256(data[ENTRY_OFFSET:]).hexdigest(),
                 'bda_size': len(data), 'sha256': hashlib.sha256(data).hexdigest()}
+    manifest.update(header)
     (dist / 'build.json').write_text(json.dumps(manifest, indent=2)+'\n', encoding='utf-8')
     archive = ROOT / 'dist/NPE9588-install.zip'
     with zipfile.ZipFile(archive, 'w', compression=zipfile.ZIP_DEFLATED) as package:

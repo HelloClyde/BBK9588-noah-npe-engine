@@ -1,0 +1,27 @@
+{
+  "result": "PASS",
+  "date": "2026-10-13",
+  "version": "0.1.0-alpha.4",
+  "bda_sha256": "6d94a2a26d201ae0186b54415d7d3e6245a4ca39bed0245dd5b7f163cbdfbc89",
+  "bda_size": 534032,
+  "sdk_commit": "9c4cc3333e9e959f70797d2bcdc1d0760ddb4471",
+  "upstream_commit": "567ae64c1ba67c8a55d0c4fbdf874f9ac58471cf",
+  "header_source_sha256": "8f3bb6f655592cff0fdd656e57adffe9d966df8093bf2b6a676f82ac4d6f5bdf",
+  "header_pixels_sha256": "4168e747e0942cab0e8a0704711b3b5688fc413c65002b803be7171c09e07a31",
+  "header_size": [
+    100,
+    24
+  ],
+  "emulator": "bbk9588-emulator-v0.1.5",
+  "nand": "build-bbk9588/emulator/header-alpha4-nand.bin",
+  "verified": [
+    "title displays generated image",
+    "alphabet/symbol/function pages",
+    "new game/map pad",
+    "mute/restored status leaves logo pixels intact",
+    "all 2400 logo RGB565 pixels match embedded data on each captured page",
+    "EXIT returns to firmware result=0"
+  ],
+  "true_hardware_tested": false,
+  "gameplay_regression": "alpha.3 records retained; no engine/input/audio code changed"
+}
