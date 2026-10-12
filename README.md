@@ -2,7 +2,7 @@
 
 Noah NPE 引擎的步步高 BBK 9588 原生 BDA 移植版。读取游戏资源，复用上游 C 引擎；
 在 240×320 屏幕上保留 240×120 游戏像素比例，配有圆角操作面板和 QWERTY 软键盘。
-当前版本为 `0.1.0-alpha.4`。
+当前版本为 `0.1.0-alpha.5`。
 
 <img src="bbk9588/assets/npe-icon.png" width="96" alt="NPE 应用图标">
 
@@ -30,6 +30,7 @@ KEYS 打开完整输入键盘，SYM 切换符号，FN 切换功能/导航键，P
 数字、26 个字母、全部可打印 ASCII 符号、空格、Tab、Backspace、Enter、Esc、F1–F12、
 导航键及 Shift/Caps/Ctrl/Alt 均可触屏访问。Shift 为一次性，Caps/Ctrl/Alt 为开关。
 V-/V+ 调节音量，MUTE 静音/恢复；启动时设置可听音量，退出前恢复进入时的系统衰减值。
+点击左上角 logo 弹出系统消息框，显示“作者：HelloClyde”；确定关闭后继续原界面。
 A/B/C/D 用于答题，装备页 U 用于卸下装备。
 键盘目前不能录入中文，SYM/FN 不是中文输入法；游戏中文显示仍沿用原机字库。
 三个存档槽自动保存到 `A:\NPE\saves\`；退出日志为 `A:\NPE\NPE.LOG`，音频诊断为 `A:\NPE\AUDIO.LOG`。
@@ -63,6 +64,8 @@ SDK 的嵌套模拟器子模块不参与构建，无需递归下载。输出：
 | ![符号键盘](bbk9588/qa/header-symbols.png) | ![功能键盘](bbk9588/qa/header-functions.png) |
 
 ![标题菜单](bbk9588/qa/header-title.png)
+
+![作者消息框](bbk9588/qa/about.png)
 
 ## 依赖
 

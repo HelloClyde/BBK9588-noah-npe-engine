@@ -111,6 +111,8 @@ static Key key_at(int page, int index) {
 }
 
 int npe_touch_hit(int page, int x, int y) {
+    if(x>=NPE_HEADER_X&&x<NPE_HEADER_X+NPE_HEADER_WIDTH&&
+       y>=NPE_HEADER_Y&&y<NPE_HEADER_Y+NPE_HEADER_HEIGHT)return NPE_TOUCH_ABOUT;
     int count=key_count(page);
     for(int i=0;i<count;++i) {
         Key k=key_at(page,i);
@@ -184,7 +186,7 @@ static void arrow(Uint8 *p,int x,int y,int key,Uint16 c) {
 void npe_touch_draw(Uint8 *p,int page,Uint16 modifiers,int volume,int audio_error,int pressed_x,int pressed_y) {
     fill(p,0,0,240,28,BG);
     for(int y=0;y<NPE_HEADER_HEIGHT;++y)for(int x=0;x<NPE_HEADER_WIDTH;++x)
-        fill(p,7+x,1+y,1,1,npe_header_pixels[y*NPE_HEADER_WIDTH+x]);
+        fill(p,NPE_HEADER_X+x,NPE_HEADER_Y+y,1,1,npe_header_pixels[y*NPE_HEADER_WIDTH+x]);
     char status[16];
     if(audio_error)memcpy(status,"SOUND ERR",10);
     else if(!volume)memcpy(status,"MUTE",5);

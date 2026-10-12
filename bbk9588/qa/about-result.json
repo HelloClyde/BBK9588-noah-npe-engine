@@ -1,0 +1,25 @@
+{
+  "result": "PASS",
+  "date": "2026-10-13",
+  "version": "0.1.0-alpha.5",
+  "bda_sha256": "a4655cebe0b1aca5142fd2f4a7ab4eb94e4e1cc0c9d31eda5983d7b6ec7dbf7f",
+  "bda_size": 534312,
+  "sdk_commit": "9c4cc3333e9e959f70797d2bcdc1d0760ddb4471",
+  "upstream_commit": "567ae64c1ba67c8a55d0c4fbdf874f9ac58471cf",
+  "emulator": "bbk9588-emulator-v0.1.5",
+  "nand": "build-bbk9588/emulator/about-alpha5-nand.bin",
+  "dialog": "SDK bda_msgbox, OK type",
+  "message_gbk_hex": "d7f7d5dfa3ba0a48656c6c6f436c796465",
+  "message": "Author label in Chinese and HelloClyde on separate lines",
+  "verified": [
+    "logo image and wordmark hit areas",
+    "title author text and complete author name",
+    "physical Enter closes without starting game; title game plane unchanged",
+    "alphabet/symbol/function pages preserve page after dismissal",
+    "touch OK closes popup",
+    "map popup returns to mode 1 and input still works",
+    "nonzero PCM after closing popup",
+    "EXIT returns to firmware result=0"
+  ],
+  "true_hardware_tested": false
+}

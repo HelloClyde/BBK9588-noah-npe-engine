@@ -38,6 +38,7 @@ static inline int bda_audio_write(const void *p,unsigned bytes){
 }
 static inline void bda_audio_stop(void){++mock_stopped;}
 static inline int bda_fs_mkdir(const char *s){(void)s;return 0;}
+static inline int bda_msgbox(const char *title,const char *message){(void)title;(void)message;return 0;}
 static inline int bda_gui_default_proc(bda_handle_t h,u32 m,u32 w,u32 l){return 0;}
 static inline void bda_gui_end_draw(bda_handle_t h){}
 static inline bda_handle_t bda_gui_current_draw(bda_handle_t h){return 0;}

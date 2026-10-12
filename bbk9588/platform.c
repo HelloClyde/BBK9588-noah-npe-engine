@@ -136,7 +136,14 @@ static void key_event(int key,int repeat){modified_key_event(key,repeat,0);}
 static int direction_key(int key){return key==SDLK_UP||key==SDLK_DOWN||key==SDLK_LEFT||key==SDLK_RIGHT;}
 static void touch_dispatch(int k){
     if(!k)return;
-    if(k==NPE_TOUCH_PAD)keyboard_page=NPE_UI_PAD;
+    if(k==NPE_TOUCH_ABOUT){
+        /* Firmware dialogs use GBK: "author:" followed by the author name. */
+        bda_msgbox("NOAH NPE","\xd7\xf7\xd5\xdf\xa3\xba\n" "HelloClyde");
+        touch_active=touch_pending=touch_used=touch_held_key=escape_pending=0;
+        escape_suppressed=1;held_key=0;
+        audio_last_progress=SDL_GetTicks();
+    }
+    else if(k==NPE_TOUCH_PAD)keyboard_page=NPE_UI_PAD;
     else if(k==NPE_TOUCH_ALPHA)keyboard_page=NPE_UI_ALPHA;
     else if(k==NPE_TOUCH_SYMBOLS)keyboard_page=NPE_UI_SYMBOLS;
     else if(k==NPE_TOUCH_FUNCTIONS)keyboard_page=keyboard_page==NPE_UI_FUNCTIONS?NPE_UI_ALPHA:NPE_UI_FUNCTIONS;
@@ -179,7 +186,14 @@ void SDL_PumpEvents(void){
             else if((bits&16)&&SDL_TICKS_PASSED(touch_now,touch_repeat_due)){touch_repeat_due=touch_now+90;key_event(k,touch_used);touch_used=1;}
         }else touch_held_key=0;
     }
-    if(touch_pending){int k=touch_key(touch_value);touch_pending=0;if(!touch_used)touch_dispatch(k);touch_used=touch_held_key=0;}
+    if(touch_pending){int k=touch_key(touch_value);touch_pending=0;if(!touch_used)touch_dispatch(k);touch_used=touch_held_key=0;
+        if(k==NPE_TOUCH_ABOUT&&frame&&!detached){
+            /* Consume the dialog's dismissal key instead of confirming the game. */
+            bda_gui_input_packet_t p;bits=0;bda_gui_input_packet(&p);
+            for(int i=0;i<6;++i)if(p.bytes[i]==1)bits|=1u<<i;
+            previous=bits;
+        }
+    }
     if(frame&&!detached){Uint32 now=SDL_GetTicks();
         if(escape_suppressed){if(!touch_active&&!(bits&16))escape_suppressed=0;bits&=~16u;escape_pending=0;}
         Uint32 pressed=bits&~previous;previous=bits;const int physical[]={SDLK_RIGHT,SDLK_LEFT,SDLK_DOWN,SDLK_UP,SDLK_F4,SDLK_RETURN};
