@@ -14,7 +14,9 @@ int bda_main(void){
        the small firmware caller stack for the desktop engine's call tree. */
     memset(&selector,0,sizeof(selector));
     bda_fs_mkdir("A:\\NPE");bda_fs_mkdir("A:\\NPE\\saves");
-    if(bda_gui_select_file(&selector,"A:\\NPE\\","npe;NPE","NPE Game")!=BDA_FILE_SELECTOR_SELECTED)return 0;
+    /* Firmware matches extensions case-insensitively; duplicate aliases
+       enumerate the same file twice. A single filter accepts .npe and .NPE. */
+    if(bda_gui_select_file(&selector,"A:\\NPE\\","npe","NPE Game")!=BDA_FILE_SELECTOR_SELECTED)return 0;
     stack=malloc(2*1024*1024);
     if(!stack){bda_msgbox("NPE9588","Cannot allocate engine stack.");return 1;}
     result=npe_bbk_on_stack((char *)stack+2*1024*1024,run_game);

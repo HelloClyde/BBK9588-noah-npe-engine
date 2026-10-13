@@ -115,6 +115,8 @@ SECTIONS {{
                  'about-result.json', 'about.png', 'about-keyboard.png',
                  'about-restored.png', 'about-map.png', 'about-map-restored.png', 'about-exit.png', 'about-audio.json',
                  'package-layout-result.json',
+                 'selector-result.json', 'selector-before.png', 'selector-after.png',
+                 'selector-lower-title.png', 'selector-upper-title.png', 'selector-cancel.png',
                  'title.png', 'map-before.png', 'map-moved.png', 'map-restored.png',
                  'keyboard.png', 'pad.png', 'keyboard-pressed.png', 'exit.png', 'continue.png']:
         source = HERE / 'qa' / name

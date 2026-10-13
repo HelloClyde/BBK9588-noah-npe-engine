@@ -2,7 +2,7 @@
 
 Noah NPE 引擎的步步高 BBK 9588 原生 BDA 移植版。读取游戏资源，复用上游 C 引擎；
 在 240×320 屏幕上保留 240×120 游戏像素比例，配有圆角操作面板和 QWERTY 软键盘。
-当前版本为 `0.1.0-alpha.6`。
+当前版本为 `0.1.0-alpha.7`。
 
 <img src="bbk9588/assets/npe-icon.png" width="96" alt="NPE 应用图标">
 
@@ -23,7 +23,7 @@ Noah NPE 引擎的步步高 BBK 9588 原生 BDA 移植版。读取游戏资源�
 3. 最终程序路径为 `A:\应用\程序\NPE9588.bda`，字体路径为
    `A:\NPE\assets\gbk12-native.bin` 和 `gbk16-native.bin`。`说明` 文件夹留在电脑即可。
 4. 自行提供游戏 `.npe` 文件，可放在 `A:\NPE\`。从设备应用入口启动 NPE9588，
-   在文件选择器中打开游戏。
+   在文件选择器中打开游戏，`.npe` 和 `.NPE` 均可识别，每个文件只列出一次。
 
 十字方向键点按或长按移动，OK 确认，中心 ACT 动作，MENU 打开或关闭菜单，PREV/NEXT 翻页，EXIT 退出。
 KEYS 打开完整输入键盘，SYM 切换符号，FN 切换功能/导航键，PAD 返回操作面板。

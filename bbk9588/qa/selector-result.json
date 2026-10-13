@@ -1,0 +1,38 @@
+{
+  "result": "PASS",
+  "date": "2026-10-13",
+  "version": "0.1.0-alpha.7",
+  "bda_sha256": "d895ffec4c4b50b658e7d6612fbe4af4233cae22ee63700d4be36a39526f2ffd",
+  "bda_size": 534312,
+  "sdk_commit": "9c4cc3333e9e959f70797d2bcdc1d0760ddb4471",
+  "upstream_commit": "567ae64c1ba67c8a55d0c4fbdf874f9ac58471cf",
+  "emulator": "bbk9588-emulator-v0.1.5",
+  "nand": "build-bbk9588/emulator/selector-alpha7-nand.bin",
+  "baseline_bda_sha256": "a4655cebe0b1aca5142fd2f4a7ab4eb94e4e1cc0c9d31eda5983d7b6ec7dbf7f",
+  "old_filter": "npe;NPE",
+  "new_filter": "npe",
+  "filesystem_npe_files": [
+    "GAME.NPE",
+    "lowercase.npe"
+  ],
+  "before_visible_file_rows": [
+    "GAME.NPE",
+    "lowercase.npe",
+    "GAME.NPE",
+    "lowercase.npe"
+  ],
+  "after_visible_file_rows": [
+    "GAME.NPE",
+    "lowercase.npe"
+  ],
+  "hidden_probe": "HIDDEN.TXT not listed",
+  "verified": [
+    "same directory used before and after",
+    "one visible entry for each uppercase/lowercase extension",
+    "both files open to Hero title",
+    "both runs exit result=0",
+    "physical Escape cancels selector and returns to firmware"
+  ],
+  "c200_sha256": "02a16107b11a3281067871c6fe3d4c289c910d8dfa9924573dd87f00351d6525",
+  "true_hardware_tested": false
+}

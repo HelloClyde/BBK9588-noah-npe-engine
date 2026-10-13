@@ -152,3 +152,25 @@ alpha.3 的存取档与音量恢复记录、alpha.4 的图片像素核对记录�
 `a4655cebe0b1aca5142fd2f4a7ab4eb94e4e1cc0c9d31eda5983d7b6ec7dbf7f`，
 SDK 固定提交仍为 `9c4cc3333e9e959f70797d2bcdc1d0760ddb4471`。
 只修改打包、说明和包校验，程序字节未变，因此复用 alpha.5 动态验证，不重复运行模拟器。
+
+## alpha.7 文件列表重复项修复（2026-10-13）
+
+入口向系统文件选择器传入 `npe;NPE`，但 SDK 已记录匹配不区分大小写。
+固件按每个过滤项枚举文件，这两个相同含义的过滤项会分别添加同一个文件。
+改为单独 `npe`，保持大小写后缀支持；不修改 SDK 或文件选择器的其他流程。
+
+在专用 NAND `build-bbk9588/emulator/selector-alpha7-nand.bin` 中准备一个 GAME.NPE、
+一个 lowercase.npe 和一个 HIDDEN.TXT。文件系统 API 确认两个 NPE 文件各只有一份。
+运行已发布 alpha.6 的确切 BDA，列表显示 GAME.NPE、lowercase.npe 各两条。
+安全替换到 alpha.7，在同一目录重新打开，两个 NPE 文件各只显示一条，TXT 始终不显示。
+选取大小写两个文件，分别进入《英雄传奇》标题，退出后日志均 result=0；
+再次打开选择器按物理 ESC，正常取消返回固件主页。
+
+测试 BDA：534312 字节，SHA-256
+`d895ffec4c4b50b658e7d6612fbe4af4233cae22ee63700d4be36a39526f2ffd`。
+SDK 仍为 `9c4cc3333e9e959f70797d2bcdc1d0760ddb4471`，引擎仍为
+`567ae64c1ba67c8a55d0c4fbdf874f9ac58471cf`，替换工具确认 C200.bin 散列不变。
+证据为 `selector-result.json`、`selector-before.png`、`selector-after.png`、
+`selector-lower-title.png`、`selector-upper-title.png` 和 `selector-cancel.png`。
+测试游戏资源及 NAND 不收录；保留 alpha.6 安装目录结构。
+仅验证选择器和启动/退出，不重新运行完整存档/音频回归，未做真机验证或全游戏通关。
