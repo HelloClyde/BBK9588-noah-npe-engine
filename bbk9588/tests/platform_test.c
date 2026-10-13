@@ -64,6 +64,40 @@ static void test_keyboard(void){
     proc(0,BDA_MSG_TOUCH_RELEASE,0,((u32)mock_y<<16)|mock_x);
     e=next_event();assert(e.key.keysym.sym==SDLK_UP&&!e.key.repeat);
 }
+static void test_audio_scheduling(void){
+    SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO);
+    SDL_AudioSpec want={32000,AUDIO_S16SYS,1,1024,callback,NULL};
+    assert(SDL_OpenAudioDevice(NULL,0,&want,NULL,0)==1);
+    SDL_PauseAudioDevice(1,0);mock_slots=2;frame=1;mock_poll_delay=10;
+    unsigned before=mock_writes;
+    SDL_PumpEvents();
+    /* Fill both available slots before the firmware message wait. Do not
+       invoke the decoder again until the firmware accepts another block. */
+    assert(mock_writes_at_poll==before+2&&mock_slots==0);
+    unsigned callbacks=audio_callbacks;
+    for(int i=0;i<5;++i)SDL_PumpEvents();
+    assert(mock_writes==before+2&&audio_callbacks==callbacks);
+    mock_slots=1;SDL_PumpEvents();assert(mock_writes==before+3);
+    SDL_LockAudioDevice(1);mock_slots=1;SDL_PumpEvents();
+    assert(mock_slots==1);SDL_UnlockAudioDevice(1);audio_pump();assert(mock_slots==0);
+    mock_slots=-1;frame=0;mock_poll_delay=0;SDL_CloseAudioDevice(1);
+}
+static void test_partial_present(void){
+    SDL_Init(SDL_INIT_VIDEO);draw=back=1;
+    vx[10]=64;vx[11]=1;
+    present();assert(mock_vx_height==320&&mock_copy_height==320);
+    unsigned full=full_presents;
+    memset(vx+24+28*240*2,0x55,240*120*2);
+    present();
+    assert(mock_vx_y==28&&mock_vx_height==120&&mock_copy_y==28&&mock_copy_height==120);
+    assert(full_presents==full);
+    assert(!memcmp(game_vx+24,vx+24+28*240*2,240*120*2));
+    touch_dispatch(NPE_TOUCH_ALPHA);present();
+    assert(mock_vx_height==320&&mock_copy_height==320&&full_presents==full+1);
+    proc(1,BDA_MSG_REDRAW_INPUT,0,0);present();
+    assert(mock_vx_height==320&&full_presents==full+2);
+    draw=back=0;
+}
 static void test_coverage_and_bounds(void){
     unsigned char found[128]={0};
     unsigned char pixels[32+240*320*2+32];
@@ -93,7 +127,8 @@ static void test_touch_escape(void){
 }
 int main(void){
     SDL_Init(SDL_INIT_AUDIO|SDL_INIT_VIDEO);
-    test_audio();test_keyboard();test_coverage_and_bounds();test_touch_escape();
-    puts("PASS: PCM volume/block/restore/errors; printable ASCII/modifiers; D-pad hold; render bounds");
+    test_audio();test_audio_scheduling();test_partial_present();
+    test_keyboard();test_coverage_and_bounds();test_touch_escape();
+    puts("PASS: PCM volume/block/restore/errors/backpressure/audio-before-wait; partial redraw; printable ASCII/modifiers; D-pad hold; render bounds");
     return 0;
 }

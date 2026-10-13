@@ -21,6 +21,11 @@ static Uint16 touch_modifiers;
 static int touch_held_key,touch_used;
 static Uint32 touch_repeat_due;
 static u8 vx[24+240*320*2];
+static u8 game_vx[24+240*120*2];
+static int full_refresh=1,ui_cached;
+static int ui_page,ui_volume,ui_error,ui_x,ui_y;
+static Uint16 ui_modifiers;
+static unsigned full_presents,game_presents;
 static SDL_Event events[32];
 static unsigned head,tail;
 static char error_text[160];
@@ -36,10 +41,18 @@ static unsigned pcm_count,pcm_offset,resample_phase,source_offset=1024;
 static unsigned audio_blocks,audio_bytes,audio_callbacks,audio_peak,audio_short_writes;
 static unsigned audio_ready_misses;
 static Uint32 audio_last_progress;
+static Uint32 audio_last_service,audio_max_service_gap,audio_max_callback_ms;
+static unsigned audio_service_gaps;
 static int audio_write_error;
 static void audio_pump(void){
     if(!audio_open||audio_paused||audio_lock||audio_pumping)return;
     audio_pumping=1;
+    Uint32 now=SDL_GetTicks(),gap=now-audio_last_service;
+    audio_last_service=now;
+    if(gap>audio_max_service_gap)audio_max_service_gap=gap;
+    /* A verified 512-sample block lasts about 23 ms. A service gap is a
+       scheduling diagnostic, not proof that the firmware queue ran dry. */
+    if(gap>23)++audio_service_gaps;
     if(!bda_audio_ready()){
         ++audio_ready_misses;
         if(SDL_GetTicks()-audio_last_progress>1500&&!audio_failed){audio_failed=1;dirty=1;snprintf(error_text,sizeof(error_text),"PCM queue stalled");}
@@ -52,7 +65,10 @@ static void audio_pump(void){
         if(!pcm_offset){
             while(pcm_count<512){
                 if(source_offset==1024){
+                    Uint32 started=SDL_GetTicks();
                     audio.callback(audio.userdata,(Uint8 *)source,sizeof(source));
+                    Uint32 elapsed=SDL_GetTicks()-started;
+                    if(elapsed>audio_max_callback_ms)audio_max_callback_ms=elapsed;
                     source_offset=0;++audio_callbacks;
                 }
                 int16_t sample=source[source_offset++];
@@ -83,9 +99,9 @@ static void audio_pump(void){
 static void release_draw(void){if(draw&&(s32)draw!=-1)bda_gui_end_draw(draw);draw=owner=0;}
 static void acquire(bda_handle_t h){if(draw&&owner==h)return;release_draw();draw=bda_gui_current_draw(h);if((s32)draw==-1)draw=0;owner=h;}
 static int proc(bda_handle_t h,u32 msg,u32 wp,u32 lp){
-    if(msg==BDA_MSG_DRAW_CONTEXT_ATTACH){acquire(h);dirty=1;}
+    if(msg==BDA_MSG_DRAW_CONTEXT_ATTACH){acquire(h);dirty=full_refresh=1;}
     if(msg==BDA_MSG_DRAW_CONTEXT_DETACH){release_draw();detached=1;}
-    if(msg==BDA_MSG_REDRAW_INPUT)dirty=1;
+    if(msg==BDA_MSG_REDRAW_INPUT)dirty=full_refresh=1;
     if(msg==BDA_MSG_WINDOW_TIMER)return 1;
     /* The prefix must reach default_proc so firmware posts coordinates. */
     if(msg==0x21){escape_suppressed=1;escape_pending=0;}
@@ -99,13 +115,34 @@ static int touch_key(u32 packed){int k=npe_touch_hit(keyboard_page,packed&65535,
     return k==SDLK_RETURN&&!keyboard_page?confirm_key():k;
 }
 static void present(void){if(!draw||!back)return;
-    npe_touch_draw(vx+24,keyboard_page,touch_modifiers,(96-audio_attenuation)*100/96,audio_failed,
-                   touch_active?(int)(touch_current&65535):-1,
-                   touch_active?(int)(touch_current>>16):-1);
-    bda_gui_draw_vx(back,0,0,vx);bda_gui_draw_guard_begin();void *old=bda_gui_select_draw_object(draw,brush);
-    bda_gui_context_copy(back,0,0,240,320,draw,0,0,0);
-    bda_gui_select_draw_object(draw,old);bda_gui_draw_guard_end();dirty=0;}
-int SDL_Init(Uint32 flags){initialized=flags;head=tail=0;detached=touch_active=touch_pending=escape_suppressed=escape_pending=0;previous=repeat_due=0;held_key=touch_held_key=touch_used=0;keyboard_page=0;touch_modifiers=0;audio_attenuation=audio_before_mute=audio_failed=0;npe_bbk_log_reset();if(!timer_started){bda_gui_millisecond_timer_start();timer_started=1;}return 0;}
+    audio_pump();
+    dirty=0;
+    int volume=(96-audio_attenuation)*100/96;
+    int x=touch_active?(int)(touch_current&65535):-1;
+    int y=touch_active?(int)(touch_current>>16):-1;
+    int ui_changed=!ui_cached||ui_page!=keyboard_page||ui_modifiers!=touch_modifiers||
+        ui_volume!=volume||ui_error!=audio_failed||ui_x!=x||ui_y!=y;
+    if(ui_changed){
+        npe_touch_draw(vx+24,keyboard_page,touch_modifiers,volume,audio_failed,x,y);
+        ui_page=keyboard_page;ui_modifiers=touch_modifiers;ui_volume=volume;
+        ui_error=audio_failed;ui_x=x;ui_y=y;ui_cached=1;
+    }
+    int full=full_refresh||ui_changed;
+    full_refresh=0;
+    if(full){bda_gui_draw_vx(back,0,0,vx);++full_presents;}
+    else {
+        /* Reuse the header/keyboard pixels. Upload only the game plane:
+           240x120 instead of rebuilding and copying all 240x320 pixels. */
+        memcpy(game_vx,vx,24);game_vx[10]=120;game_vx[11]=0;
+        memcpy(game_vx+24,vx+24+28*240*2,240*120*2);
+        bda_gui_draw_vx(back,0,28,game_vx);++game_presents;
+    }
+    audio_pump();
+    bda_gui_draw_guard_begin();void *old=bda_gui_select_draw_object(draw,brush);
+    bda_gui_context_copy(back,0,full?0:28,240,full?320:120,draw,0,full?0:28,0);
+    bda_gui_select_draw_object(draw,old);bda_gui_draw_guard_end();
+    audio_pump();}
+int SDL_Init(Uint32 flags){initialized=flags;head=tail=0;detached=touch_active=touch_pending=escape_suppressed=escape_pending=0;previous=repeat_due=0;held_key=touch_held_key=touch_used=0;keyboard_page=0;touch_modifiers=0;audio_attenuation=audio_before_mute=audio_failed=0;ui_cached=0;full_refresh=1;npe_bbk_log_reset();if(!timer_started){bda_gui_millisecond_timer_start();timer_started=1;}return 0;}
 int SDL_InitSubSystem(Uint32 flags){initialized|=flags;return 0;}
 Uint32 SDL_WasInit(Uint32 flags){return initialized&flags;}
 void SDL_Quit(void){SDL_CloseAudioDevice(1);if(timer_started){bda_gui_millisecond_timer_stop();timer_started=0;}initialized=0;}
@@ -125,7 +162,7 @@ void SDL_DestroyRenderer(SDL_Renderer *r){(void)r;}
 int SDL_RenderSetLogicalSize(SDL_Renderer *r,int w,int h){(void)r;return w==240&&h==120?0:-1;}
 SDL_Texture *SDL_CreateTexture(SDL_Renderer *r,Uint32 f,int a,int w,int h){(void)r;(void)f;(void)a;return w==240&&h==120?&texture:NULL;}
 void SDL_DestroyTexture(SDL_Texture *t){(void)t;}
-int SDL_UpdateTexture(SDL_Texture *t,const void *rect_unused,const void *p,int pitch){(void)t;(void)rect_unused;for(int y=0;y<120;++y){const Uint32 *s=(const Uint32 *)((const Uint8 *)p+y*pitch);for(int x=0;x<240;++x){Uint32 c=s[x];u16 rgb=((c>>8)&0xf800)|((c>>5)&0x7e0)|((c>>3)&31);if(!rgb)rgb=1;unsigned n=24+((y+28)*240+x)*2;vx[n]=rgb;vx[n+1]=rgb>>8;}}dirty=1;return 0;}
+int SDL_UpdateTexture(SDL_Texture *t,const void *rect_unused,const void *p,int pitch){(void)t;(void)rect_unused;audio_pump();for(int y=0;y<120;++y){const Uint32 *s=(const Uint32 *)((const Uint8 *)p+y*pitch);for(int x=0;x<240;++x){Uint32 c=s[x];u16 rgb=((c>>8)&0xf800)|((c>>5)&0x7e0)|((c>>3)&31);if(!rgb)rgb=1;unsigned n=24+((y+28)*240+x)*2;vx[n]=rgb;vx[n+1]=rgb>>8;}}dirty=1;audio_pump();return 0;}
 int SDL_RenderClear(SDL_Renderer *r){(void)r;return 0;}
 int SDL_RenderCopy(SDL_Renderer *r,SDL_Texture *t,const void *src,const void *dst){(void)r;(void)t;(void)src;(void)dst;return 0;}
 void SDL_RenderPresent(SDL_Renderer *r){(void)r;present();}
@@ -142,6 +179,7 @@ static void touch_dispatch(int k){
         touch_active=touch_pending=touch_used=touch_held_key=escape_pending=0;
         escape_suppressed=1;held_key=0;
         audio_last_progress=SDL_GetTicks();
+        audio_last_service=audio_last_progress;full_refresh=1;
     }
     else if(k==NPE_TOUCH_PAD)keyboard_page=NPE_UI_PAD;
     else if(k==NPE_TOUCH_ALPHA)keyboard_page=NPE_UI_ALPHA;
@@ -170,7 +208,9 @@ static void touch_dispatch(int k){
 void SDL_PumpEvents(void){
     /* The firmware poll can block after a consumed wake. Consume one message
        per call; the 10 ms frame timer also wakes idle animation/audio waits. */
+    audio_pump();
     if(frame&&!detached){bda_gui_message_t m;bda_gui_event_pump_frame_once(&m,frame);}
+    audio_pump();
     if(detached&&!SDL_HasEvent(SDL_QUIT)){SDL_Event e;SDL_zero(e);e.type=SDL_QUIT;SDL_PushEvent(&e);}
     Uint32 bits=0;
     if(frame&&!detached){bda_gui_input_packet_t p;bda_gui_input_packet(&p);for(int i=0;i<6;++i)if(p.bytes[i]==1)bits|=1u<<i;}
@@ -230,6 +270,8 @@ SDL_AudioDeviceID SDL_OpenAudioDevice(const char *name,int capture,const SDL_Aud
     pcm_count=pcm_offset=resample_phase=0;source_offset=1024;
     audio_blocks=audio_bytes=audio_callbacks=audio_peak=audio_short_writes=0;
     audio_ready_misses=0;audio_last_progress=SDL_GetTicks();
+    audio_last_service=audio_last_progress;audio_max_service_gap=audio_max_callback_ms=0;
+    audio_service_gaps=full_presents=game_presents=0;
     audio_write_error=0;audio_applied=-1;
     fprintf(stderr,"9588 PCM 22050/16/1: original attenuation=%d, requested=%d, block=1024\n",audio_original,audio_attenuation);
     dirty=1;return 1;
@@ -250,10 +292,12 @@ void SDL_CloseAudioDevice(SDL_AudioDeviceID d){
     if(log){
         fprintf(log,"NPE9588 PCM 22050 Hz / 16-bit / mono\noriginal_attenuation=%d\napplied_initial_attenuation=%d\nrequested_final_attenuation=%d\nrestored_attenuation=%d\nblocks=%u\nbytes=%u\ncallbacks=%u\ninput_peak=%u\nshort_writes=%u\nready_misses=%u\nwrite_error=%d\n",
                 audio_original,audio_applied,audio_attenuation,restored,audio_blocks,audio_bytes,audio_callbacks,audio_peak,audio_short_writes,audio_ready_misses,audio_write_error);
+        fprintf(log,"max_service_gap_ms=%u\nservice_gaps_over_23ms=%u\nmax_callback_ms=%u\nfull_presents=%u\ngame_only_presents=%u\n",
+                audio_max_service_gap,audio_service_gaps,audio_max_callback_ms,full_presents,game_presents);
         fclose(log);
     }
 }
-void SDL_PauseAudioDevice(SDL_AudioDeviceID d,int pause){(void)d;audio_paused=pause;}
+void SDL_PauseAudioDevice(SDL_AudioDeviceID d,int pause){(void)d;audio_paused=pause;audio_last_service=SDL_GetTicks();}
 void SDL_LockAudioDevice(SDL_AudioDeviceID d){(void)d;++audio_lock;}
 void SDL_UnlockAudioDevice(SDL_AudioDeviceID d){(void)d;if(audio_lock)--audio_lock;}
 int SDL_GetAudioDeviceStatus(SDL_AudioDeviceID d){(void)d;return audio_open&&!audio_paused?SDL_AUDIO_PLAYING:0;}

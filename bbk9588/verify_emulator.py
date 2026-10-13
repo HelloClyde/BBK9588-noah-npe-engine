@@ -12,13 +12,15 @@ import time
 import urllib.parse
 import urllib.request
 
-OUT = Path(__file__).resolve().parent / 'qa'
+DEFAULT_OUT = Path(__file__).resolve().parent / 'qa'
 
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--base', default='http://127.0.0.1:8026')
+    ap.add_argument('--out', type=Path, default=DEFAULT_OUT)
     args = ap.parse_args()
     base = args.base.rstrip('/')
+    OUT = args.out
     OUT.mkdir(exist_ok=True)
 
     def request(endpoint, post=False, **params):

@@ -1,0 +1,337 @@
+{
+  "version": "0.1.0-alpha.8",
+  "date": "2026-10-13",
+  "result": "PASS",
+  "bda_bytes": 535524,
+  "bda_sha256": "6ee554b635158ff608b7037689894f4f448abea318f07d75cb9b8e103d3f0ad5",
+  "baseline_bda_sha256": "d895ffec4c4b50b658e7d6612fbe4af4233cae22ee63700d4be36a39526f2ffd",
+  "sdk_commit": "9c4cc3333e9e959f70797d2bcdc1d0760ddb4471",
+  "upstream_commit": "567ae64c1ba67c8a55d0c4fbdf874f9ac58471cf",
+  "environment": "bbk9588-emulator-v0.1.5; dedicated NAND audio-alpha8-nand.bin; Hero",
+  "scenario": "3 cycles: KEYS -> SYM -> FN -> PAD -> virtual Right hold 650ms; 1s after each release; compare AIC counters over each ~23s interval",
+  "baseline": {
+    "version": "alpha7",
+    "elapsed_seconds": 23.53200000000652,
+    "audio_before": {
+      "sample_rate_hz": 22050,
+      "tx_fifo_level": 31,
+      "rx_fifo_level": 0,
+      "flags": 25,
+      "playing": true,
+      "recording": false,
+      "muted": false,
+      "timer_running": true,
+      "output_voice": true,
+      "input_voice": false,
+      "aicfr": "0x00001f31",
+      "aiccr": "0x00094802",
+      "cdccr1": "0x03002000",
+      "cdccr2": "0x00000403",
+      "tx_dma_samples": 1282841,
+      "rx_dma_samples": 0,
+      "output_frames": 1313290,
+      "input_frames": 0,
+      "underruns": 30480,
+      "overruns": 0,
+      "dma_completion_count": 2504,
+      "dma_rearm_count": 2504,
+      "dma_last_rearm_gap_ns": 2048,
+      "dma_max_rearm_gap_ns": 182054820,
+      "dma_total_rearm_gap_ns": 1418884107,
+      "dma_last_gap_underruns": 0,
+      "dma_total_gap_underruns": 30480,
+      "dma_last_units": 512,
+      "dma_completion_fifo": 31,
+      "dma_rearm_fifo": 31,
+      "packet_count": 96,
+      "updated_at": 1791851666.1884806
+    },
+    "audio_after": {
+      "sample_rate_hz": 22050,
+      "tx_fifo_level": 31,
+      "rx_fifo_level": 0,
+      "flags": 25,
+      "playing": true,
+      "recording": false,
+      "muted": false,
+      "timer_running": true,
+      "output_voice": true,
+      "input_voice": false,
+      "aicfr": "0x00001f31",
+      "aiccr": "0x00094802",
+      "cdccr1": "0x03002000",
+      "cdccr2": "0x00000403",
+      "tx_dma_samples": 1800746,
+      "rx_dma_samples": 0,
+      "output_frames": 1832700,
+      "input_frames": 0,
+      "underruns": 31985,
+      "overruns": 0,
+      "dma_completion_count": 3515,
+      "dma_rearm_count": 3515,
+      "dma_last_rearm_gap_ns": 2068,
+      "dma_max_rearm_gap_ns": 182054820,
+      "dma_total_rearm_gap_ns": 1497813327,
+      "dma_last_gap_underruns": 0,
+      "dma_total_gap_underruns": 31985,
+      "dma_last_units": 512,
+      "dma_completion_fifo": 31,
+      "dma_rearm_fifo": 31,
+      "packet_count": 119,
+      "updated_at": 1791851689.72351
+    },
+    "delta": {
+      "output_frames": 519410,
+      "underruns": 1505,
+      "overruns": 0,
+      "dma_completion_count": 1011,
+      "dma_rearm_count": 1011,
+      "dma_total_rearm_gap_ns": 78929220,
+      "dma_total_gap_underruns": 1505
+    },
+    "transport_before": {
+      "received_packets": 2972,
+      "received_bytes": 5253160,
+      "queued_packets": 128,
+      "dropped_packets": 0,
+      "ws_sent_packets": 0,
+      "ws_sent_bytes": 0,
+      "ws_connections": 0,
+      "ws_connection_peak": 0
+    },
+    "transport_after": {
+      "received_packets": 4147,
+      "received_bytes": 7330096,
+      "queued_packets": 128,
+      "dropped_packets": 0,
+      "ws_sent_packets": 0,
+      "ws_sent_bytes": 0,
+      "ws_connections": 0,
+      "ws_connection_peak": 0
+    }
+  },
+  "final": {
+    "version": "alpha8-o2",
+    "elapsed_seconds": 23.468999999924563,
+    "audio_before": {
+      "sample_rate_hz": 22050,
+      "tx_fifo_level": 31,
+      "rx_fifo_level": 0,
+      "flags": 25,
+      "playing": true,
+      "recording": false,
+      "muted": false,
+      "timer_running": true,
+      "output_voice": true,
+      "input_voice": false,
+      "aicfr": "0x00001f31",
+      "aiccr": "0x00094802",
+      "cdccr1": "0x03002000",
+      "cdccr2": "0x00000403",
+      "tx_dma_samples": 539555,
+      "rx_dma_samples": 0,
+      "output_frames": 545512,
+      "input_frames": 0,
+      "underruns": 5988,
+      "overruns": 0,
+      "dma_completion_count": 1053,
+      "dma_rearm_count": 1053,
+      "dma_last_rearm_gap_ns": 2068,
+      "dma_max_rearm_gap_ns": 47237144,
+      "dma_total_rearm_gap_ns": 284183384,
+      "dma_last_gap_underruns": 0,
+      "dma_total_gap_underruns": 5988,
+      "dma_last_units": 512,
+      "dma_completion_fifo": 31,
+      "dma_rearm_fifo": 31,
+      "packet_count": 54,
+      "updated_at": 1791852198.264461
+    },
+    "audio_after": {
+      "sample_rate_hz": 22050,
+      "tx_fifo_level": 31,
+      "rx_fifo_level": 0,
+      "flags": 25,
+      "playing": true,
+      "recording": false,
+      "muted": false,
+      "timer_running": true,
+      "output_voice": true,
+      "input_voice": false,
+      "aicfr": "0x00001f31",
+      "aiccr": "0x00094802",
+      "cdccr1": "0x03002000",
+      "cdccr2": "0x00000403",
+      "tx_dma_samples": 1059141,
+      "rx_dma_samples": 0,
+      "output_frames": 1065098,
+      "input_frames": 0,
+      "underruns": 5988,
+      "overruns": 0,
+      "dma_completion_count": 2068,
+      "dma_rearm_count": 2068,
+      "dma_last_rearm_gap_ns": 4136,
+      "dma_max_rearm_gap_ns": 47237144,
+      "dma_total_rearm_gap_ns": 287373334,
+      "dma_last_gap_underruns": 0,
+      "dma_total_gap_underruns": 5988,
+      "dma_last_units": 512,
+      "dma_completion_fifo": 31,
+      "dma_rearm_fifo": 31,
+      "packet_count": 77,
+      "updated_at": 1791852221.7990406
+    },
+    "delta": {
+      "output_frames": 519586,
+      "underruns": 0,
+      "overruns": 0,
+      "dma_completion_count": 1015,
+      "dma_rearm_count": 1015,
+      "dma_total_rearm_gap_ns": 3189950,
+      "dma_total_gap_underruns": 0
+    },
+    "transport_before": {
+      "received_packets": 1255,
+      "received_bytes": 2218296,
+      "queued_packets": 128,
+      "dropped_packets": 0,
+      "ws_sent_packets": 0,
+      "ws_sent_bytes": 0,
+      "ws_connections": 0,
+      "ws_connection_peak": 0
+    },
+    "transport_after": {
+      "received_packets": 2430,
+      "received_bytes": 4295320,
+      "queued_packets": 128,
+      "dropped_packets": 0,
+      "ws_sent_packets": 0,
+      "ws_sent_bytes": 0,
+      "ws_connections": 0,
+      "ws_connection_peak": 0
+    }
+  },
+  "pcm_captures": {
+    "normal": {
+      "packets": 100,
+      "samples": 88422,
+      "peak": 32383,
+      "formats": [
+        [
+          22050,
+          2,
+          16
+        ]
+      ],
+      "rms": 7646.795143918856
+    },
+    "muted": {
+      "packets": 100,
+      "samples": 88376,
+      "peak": 0,
+      "formats": [
+        [
+          22050,
+          2,
+          16
+        ]
+      ],
+      "rms": 0.0
+    },
+    "restored": {
+      "packets": 100,
+      "samples": 88376,
+      "peak": 32638,
+      "formats": [
+        [
+          22050,
+          2,
+          16
+        ]
+      ],
+      "rms": 10609.89006713622
+    },
+    "after_about": {
+      "packets": 100,
+      "samples": 88376,
+      "peak": 32638,
+      "formats": [
+        [
+          22050,
+          2,
+          16
+        ]
+      ],
+      "rms": 8795.775071820455
+    }
+  },
+  "audio_log": {
+    "original_attenuation": 0,
+    "applied_initial_attenuation": 0,
+    "requested_final_attenuation": 0,
+    "restored_attenuation": 0,
+    "blocks": 7745,
+    "bytes": 7930880,
+    "callbacks": 5620,
+    "input_peak": 32768,
+    "short_writes": 0,
+    "ready_misses": 538584,
+    "write_error": 0,
+    "max_service_gap_ms": 242,
+    "service_gaps_over_23ms": 2876,
+    "max_callback_ms": 58,
+    "full_presents": 113,
+    "game_only_presents": 109
+  },
+  "save_load": {
+    "result": "PASS",
+    "before": {
+      "position": [
+        1,
+        11,
+        12
+      ],
+      "bytes": 2366,
+      "sha256": "523c73cde8d9d3babaafa207f51381c22910a9499e2f6bdc2a71892c20f98902",
+      "path": "/NPE/saves/save-e6de0d3574efa98c.npes"
+    },
+    "moved": {
+      "position": [
+        1,
+        13,
+        12
+      ],
+      "bytes": 2366,
+      "sha256": "85c49f17aba085b4647d0cdac5435577d2dd597744f0687d8c5f23aecda56d67",
+      "path": "/NPE/saves/save-e6de0d3574efa98c-2.npes"
+    },
+    "restored": {
+      "position": [
+        1,
+        11,
+        12
+      ],
+      "bytes": 2366,
+      "sha256": "523c73cde8d9d3babaafa207f51381c22910a9499e2f6bdc2a71892c20f98902",
+      "path": "/NPE/saves/save-e6de0d3574efa98c.npes"
+    },
+    "audio_transport": {
+      "received_packets": 6376,
+      "received_bytes": 11270628,
+      "queued_packets": 128,
+      "dropped_packets": 0,
+      "ws_sent_packets": 0,
+      "ws_sent_bytes": 0,
+      "ws_connections": 0,
+      "ws_connection_peak": 0
+    },
+    "movement_input": "two physical taps and 650ms virtual Right hold",
+    "nand": "build-bbk9588/emulator/audio-alpha8-nand.bin"
+  },
+  "codec_equivalence": "audio-alpha8-codec.json",
+  "limits": [
+    "No physical 9588 measurement or full-game playthrough.",
+    "Zero underruns applies only to the measured UI scenario; file operations, host file export/debug pauses and the blocking system dialog were outside that interval.",
+    "Service gaps in AUDIO.LOG are scheduling intervals, not measured firmware underruns."
+  ]
+}

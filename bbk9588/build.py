@@ -67,6 +67,11 @@ SECTIONS {{
     for source in sources:
         obj = build / (source.stem + '.o')
         extra = ['-Dmain=npe_host_main'] if source.name == 'main.c' else []
+        # The codec's small signed arithmetic helpers are called in sample
+        # loops. O2 inlines constant shifts instead of leaving costly generic
+        # 64-bit division calls on MIPS32; retain size optimization elsewhere.
+        if source.name in ['audio_decode.c', 'sound_sdl.c']:
+            extra += ['-O2']
         subprocess.run([cc, *flags, *extra, '-c', str(source), '-o', str(obj)], check=True)
         objects.append(str(obj))
     elf, raw = build / 'NPE9588.elf', build / 'NPE9588.bin'
@@ -117,6 +122,8 @@ SECTIONS {{
                  'package-layout-result.json',
                  'selector-result.json', 'selector-before.png', 'selector-after.png',
                  'selector-lower-title.png', 'selector-upper-title.png', 'selector-cancel.png',
+                 'audio-alpha8-result.json', 'audio-alpha8-codec.json', 'audio-alpha8-device-log.txt',
+                 'audio-alpha8-map.png', 'audio-alpha8-muted.png', 'audio-alpha8-exit.png',
                  'title.png', 'map-before.png', 'map-moved.png', 'map-restored.png',
                  'keyboard.png', 'pad.png', 'keyboard-pressed.png', 'exit.png', 'continue.png']:
         source = HERE / 'qa' / name
