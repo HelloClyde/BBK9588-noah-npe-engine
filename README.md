@@ -4,6 +4,8 @@
 
 当前为开发版。已实现地图、剧情、战斗、人物与装备、商店、自身三槽存档、音频播放和手柄输入；完整跨游戏兼容仍在完善。最新状态见 [plan.md](plan.md)。
 
+v0.1.4 修正走路动画节奏：按原固件64Hz公共时基等待后提交每个姿态，移除每帧固定67毫秒。保留原版四帧动作及整格位移，详见[行走逻辑与验证](doc/games/np560_npe_walk_display.md)。
+
 ## 下载与使用
 
 在 [GitHub Releases](https://github.com/HelloClyde/noah-npe-engine/releases) 下载 Windows x64 便携包，解压后双击 `npe-sdl.exe` 选择游戏，或将 `.npe` 文件拖到 EXE 上。保留 `assets` 和 `SDL2.dll`。
