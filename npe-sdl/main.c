@@ -3114,12 +3114,15 @@ static int game_world_timer_display(const NpeFile *file,NpeWorld *world,
 
 static int commit_world_walk(void *opaque,const uint8_t *pixels,unsigned wait_parameter) {
     WalkDisplay *display=opaque;
-    /* The web renderer spaces the four walking poses at about 15 fps.
-       Present each pose before its hold, including the final walking pose. */
-    draw_pixels(display->renderer,display->texture,pixels);
+    /* Original 46:BDD8..BDE2: wait(10 ms), then commit the retained LCD.
+       4E:7286 arms max(1, floor(ms*64/1000)) on the shared 64-Hz clock;
+       it does not restart that clock. Preserve the current tick phase. */
     if(wait_parameter){
-        Uint32 hold_ms=wait_parameter==10?67u:wait_parameter;
-        Uint32 deadline=SDL_GetTicks()+hold_ms;
+        Uint32 start=SDL_GetTicks();
+        Uint64 tick_count=(Uint64)wait_parameter*64u/1000u;
+        if(!tick_count)tick_count=1;
+        Uint64 next=(Uint64)start*64u/1000u+tick_count;
+        Uint32 deadline=(Uint32)((next*1000u+63u)/64u);
         for(;;){
             Uint32 now=SDL_GetTicks();if(SDL_TICKS_PASSED(now,deadline))break;
             SDL_Event event;
@@ -3127,6 +3130,7 @@ static int commit_world_walk(void *opaque,const uint8_t *pixels,unsigned wait_pa
                event.type==SDL_QUIT){SDL_PushEvent(&event);return 1;}
         }
     }
+    draw_pixels(display->renderer,display->texture,pixels);
     return 0;
 }
 

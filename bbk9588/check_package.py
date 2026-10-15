@@ -47,7 +47,7 @@ def main():
             raise RuntimeError('Install layout metadata mismatch')
         if manifest['version'] != (ROOT / 'VERSION').read_text().strip():
             raise RuntimeError('Version mismatch')
-        if manifest['upstream_commit'] != '567ae64c1ba67c8a55d0c4fbdf874f9ac58471cf':
+        if manifest['upstream_commit'] != 'b7568fbf0fbff22e1e8f9761555a0e4a57fc907d':
             raise RuntimeError('Upstream mismatch')
         if manifest['sdk_commit'] != '9c4cc3333e9e959f70797d2bcdc1d0760ddb4471':
             raise RuntimeError('SDK mismatch')

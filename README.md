@@ -2,7 +2,7 @@
 
 Noah NPE 引擎的步步高 BBK 9588 原生 BDA 移植版。读取游戏资源，复用上游 C 引擎；
 在 240×320 屏幕上保留 240×120 游戏像素比例，配有圆角操作面板和 QWERTY 软键盘。
-当前版本为 `0.1.0-alpha.8`。
+当前版本为 `0.1.0-alpha.9`。
 
 <img src="bbk9588/assets/npe-icon.png" width="96" alt="NPE 应用图标">
 
@@ -95,6 +95,7 @@ SDK 的嵌套模拟器子模块不参与构建，无需递归下载。输出：
 alpha.8 在消息等待与绘图前后优先补音，并缓存静态键盘；仅游戏变化时上传、拷屏面积减少 62.5%。
 音频模块单独使用 `-O2` 编译，22 个音频段的主机 PCM 对比逐字节一致。
 模拟器 PCM 正常播放、静音与恢复单独采集验证；音频优化仍需真机复测。
+alpha.9 同步上游 v0.1.4：行走姿态改为按共享 64 Hz 时基等待后提交，移除固定 67 ms 停顿。
 
 `main`、PR 和手动触发执行主机测试、构建、BDA 静态校验和安装包校验，上传临时 artifacts。
 `v*` 标签须匹配 `VERSION`，成功构建后发布同一批 BDA、安装包和散列清单。
@@ -104,7 +105,7 @@ alpha.8 在消息等待与绘图前后优先补音，并缓存静态键盘；仅
 
 感谢 [HelloClyde/noah-npe-engine](https://github.com/HelloClyde/noah-npe-engine)
 提供 NPE 解析、游戏逻辑、界面、音频与存档实现；本移植保留其源码和历史，基线为
-`567ae64c1ba67c8a55d0c4fbdf874f9ac58471cf`。
+`b7568fbf0fbff22e1e8f9761555a0e4a57fc907d`。
 感谢 [bbk9588-bda-sdk](https://github.com/HelloClyde/bbk9588-bda-sdk) 的公开 API、
 工具链安装与 BDA 打包校验工具。
 沿用上游致谢：感谢 [NoahWiki](https://noahwiki.purelind.com/) 提供诺亚舟游戏资料、

@@ -1,0 +1,150 @@
+{
+  "version": "0.1.0-alpha.9",
+  "date": "2026-10-15",
+  "result": "PASS",
+  "upstream_commit": "b7568fbf0fbff22e1e8f9761555a0e4a57fc907d",
+  "upstream_tag": "v0.1.4",
+  "sdk_commit": "9c4cc3333e9e959f70797d2bcdc1d0760ddb4471",
+  "bda_bytes": 535628,
+  "bda_sha256": "4764c0377983012c842744677943dd7033fa6321649285e168a735cd42ec1969",
+  "environment": "bbk9588-emulator-v0.1.5; dedicated sync-alpha9-nand.bin; Hero",
+  "input": {
+    "before": [
+      1,
+      8,
+      12
+    ],
+    "physical_right_short": [
+      1,
+      9,
+      12
+    ],
+    "physical_left_short": [
+      1,
+      8,
+      12
+    ],
+    "virtual_right_180ms": [
+      1,
+      9,
+      12
+    ],
+    "virtual_right_650ms": [
+      1,
+      11,
+      12
+    ],
+    "method": "Read-only guest RAM inspection using MIPS offsetof(NpeWorld, field) offsets; normal firmware input only"
+  },
+  "save_load": {
+    "result": "PASS",
+    "before": {
+      "position": [
+        1,
+        8,
+        12
+      ],
+      "bytes": 2366,
+      "sha256": "70ecd5c13f19f3050ad588cac57249bf758ccd784c08d48b6604876bbdc337e0",
+      "path": "/NPE/saves/save-e6de0d3574efa98c.npes"
+    },
+    "moved": {
+      "position": [
+        1,
+        11,
+        12
+      ],
+      "bytes": 2366,
+      "sha256": "d1386a95f3b5794368e8c2f66f3760e0263709829e46f390d40c0be63cca6f95",
+      "path": "/NPE/saves/save-e6de0d3574efa98c-2.npes"
+    },
+    "restored": {
+      "position": [
+        1,
+        8,
+        12
+      ],
+      "bytes": 2366,
+      "sha256": "70ecd5c13f19f3050ad588cac57249bf758ccd784c08d48b6604876bbdc337e0",
+      "path": "/NPE/saves/save-e6de0d3574efa98c.npes"
+    },
+    "audio_transport": {
+      "received_packets": 4290,
+      "received_bytes": 7582620,
+      "queued_packets": 128,
+      "dropped_packets": 0,
+      "ws_sent_packets": 0,
+      "ws_sent_bytes": 0,
+      "ws_connections": 0,
+      "ws_connection_peak": 0
+    },
+    "movement_input": "two physical taps and 650ms virtual Right hold",
+    "nand": "build-bbk9588/emulator/sync-alpha9-nand.bin"
+  },
+  "pcm_captures": {
+    "walking": {
+      "packets": 100,
+      "samples": 88378,
+      "peak": 32638,
+      "formats": [
+        [
+          22050,
+          2,
+          16
+        ]
+      ],
+      "rms": 12037.094490085397
+    },
+    "muted": {
+      "packets": 100,
+      "samples": 88376,
+      "peak": 0,
+      "formats": [
+        [
+          22050,
+          2,
+          16
+        ]
+      ],
+      "rms": 0.0
+    },
+    "restored": {
+      "packets": 100,
+      "samples": 88378,
+      "peak": 32638,
+      "formats": [
+        [
+          22050,
+          2,
+          16
+        ]
+      ],
+      "rms": 8363.488550536593
+    }
+  },
+  "audio_log": {
+    "original_attenuation": 0,
+    "applied_initial_attenuation": 0,
+    "requested_final_attenuation": 0,
+    "restored_attenuation": 0,
+    "blocks": 8582,
+    "bytes": 8787968,
+    "callbacks": 6228,
+    "input_peak": 32768,
+    "short_writes": 0,
+    "ready_misses": 539338,
+    "write_error": 0,
+    "max_service_gap_ms": 828,
+    "service_gaps_over_23ms": 3173,
+    "max_callback_ms": 235,
+    "full_presents": 87,
+    "game_only_presents": 129
+  },
+  "exit_result": 0,
+  "limits": [
+    "No physical 9588 measurement or full-game completion.",
+    "No fixed 64 FPS claim: firmware polling, decoding and drawing can delay actual presentation.",
+    "PCM presence does not prove all audio underruns have been eliminated.",
+    "Read-only debug-memory inspection and host file export can pause the guest; full-run timing counters are not an audio performance benchmark."
+  ]
+}

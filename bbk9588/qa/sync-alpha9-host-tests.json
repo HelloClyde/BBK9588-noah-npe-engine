@@ -1,0 +1,38 @@
+{
+  "version": "0.1.0-alpha.9",
+  "date": "2026-10-15",
+  "upstream_commit": "b7568fbf0fbff22e1e8f9761555a0e4a57fc907d",
+  "result": "PASS",
+  "environment": "Windows host GCC 16.1.0 and existing MSYS2 UCRT64 SDL2 development libraries; independent reviewer agent",
+  "platform_suite": "bbk9588/run_host_tests.py --cc <GCC>: PASS",
+  "timing_probe": {
+    "result": "PASS",
+    "source": "npe-sdl/tests/sdl_walk_timing_probe.c",
+    "covers": [
+      "7 start phases including Uint32 wrap",
+      "wait before LCD commit",
+      "ordinary input consumption",
+      "quit interrupts without next pose",
+      "zero wait",
+      "four poses use shared phase"
+    ],
+    "stdout": "PASS walk: shared 64-Hz phase, wait-before-commit, ordinary input consumption, quit, zero wait and Uint32 wrap"
+  },
+  "pose_probe": {
+    "result": "PASS",
+    "source": "npe-sdl/tests/sdl_walk_pose_probe.c",
+    "direction_paths": 10,
+    "native_commits": 42,
+    "pixel_differences": 0,
+    "fixture": "private tjfy-world-probe.npe and native-walk-*.idx; resources retained only in ignored test output",
+    "scope": "6 exit/event commits are skipped as designed by this probe and require the dedicated exit matrix; not claimed tested here"
+  },
+  "build_command": "gcc -std=c11 -O1 -Wall -Wextra -Wpedantic -UNDEBUG -I <SDL2 include> <probe.c> sound_sdl.c npe.c audio.c audio_decode.c world.c save.c gbk.c text.c -L <SDL2 lib> -lSDL2 -lcomdlg32 -o <probe.exe>",
+  "warnings": [
+    "Existing upstream main.c start_fields may be used uninitialized"
+  ],
+  "limits": [
+    "Host SDL verification is not physical 9588 timing verification.",
+    "Full map exit/event matrix and full-game playthrough were not run."
+  ]
+}

@@ -12,7 +12,7 @@ import zipfile
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent
 SDK_COMMIT = '9c4cc3333e9e959f70797d2bcdc1d0760ddb4471'
-UPSTREAM_COMMIT = '567ae64c1ba67c8a55d0c4fbdf874f9ac58471cf'
+UPSTREAM_COMMIT = 'b7568fbf0fbff22e1e8f9761555a0e4a57fc907d'
 
 def main():
     ap = argparse.ArgumentParser()
@@ -124,6 +124,10 @@ SECTIONS {{
                  'selector-lower-title.png', 'selector-upper-title.png', 'selector-cancel.png',
                  'audio-alpha8-result.json', 'audio-alpha8-codec.json', 'audio-alpha8-device-log.txt',
                  'audio-alpha8-map.png', 'audio-alpha8-muted.png', 'audio-alpha8-exit.png',
+                 'sync-alpha9-result.json', 'sync-alpha9-host-tests.json', 'sync-alpha9-audio-log.txt',
+                 'sync-alpha9-selector.png', 'sync-alpha9-title.png', 'sync-alpha9-map.png',
+                 'sync-alpha9-walked.png', 'sync-alpha9-keyboard.png',
+                 'sync-alpha9-about-restored.png', 'sync-alpha9-exit.png',
                  'title.png', 'map-before.png', 'map-moved.png', 'map-restored.png',
                  'keyboard.png', 'pad.png', 'keyboard-pressed.png', 'exit.png', 'continue.png']:
         source = HERE / 'qa' / name

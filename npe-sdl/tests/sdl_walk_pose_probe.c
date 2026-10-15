@@ -69,6 +69,8 @@ static SDL_Window *create_probe_window(const char *s,int x,int y,int w,int h,Uin
 #define npe_world_save guarded_save
 #define npe_world_restore guarded_restore
 /* Observe the logical wait, not the audio bridge's bounded10ms slice. */
+/* Direct controller-help waits have no logical timeout local. */
+static const int timeout=20;
 #define SDL_WaitEventTimeout(event,slice) wait_outer(event,timeout)
 #define SDL_CreateWindow create_probe_window
 #define npe_sound_select select_sound
@@ -291,9 +293,10 @@ static int wait_outer(SDL_Event *event,int timeout) {
     assert(!memcmp(last_pixel_frame,native,sizeof(native)));
 #endif
 #ifdef NPE_WALK_EXIT_MATRIX
-    assert(notice_keys==2 && fake_clock==1234+64+5000 && timeout==4000);
+    assert(notice_keys==2 && fake_clock==1234+48+5000 && timeout==4000);
 #else
-    assert(fake_clock==1234+(walk_cases[main_case].commits==1?0:64));
+    /* Shared64Hz phase: from1234ms, four ticks end at1282ms. */
+    assert(fake_clock==1234+(walk_cases[main_case].commits==1?0:48));
     assert(timeout==4000-(int)(fake_clock-1234));
 #endif
     main_active=0;++main_stage;event->type=SDL_QUIT;return 1;
